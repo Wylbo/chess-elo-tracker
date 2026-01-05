@@ -11,44 +11,37 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
   <style>
     :root {
-      --bg: #2e3440;
-      --panel: #3b4252;
-      --panel-2: #434c5e;
-      --text: #eceff4;
-      --muted: #d8dee9;
-      --border: #4c566a;
-      --accent: #88c0d0;
-      --accent-2: #81a1c1;
-      --warn: #ebcb8b;
-      --error: #bf616a;
+      --bg-main:        #1C1B1A;
+      --bg-surface:     #232221;
+      --bg-elevated:    #2B2A28;
+      --text-primary:   #E6E1DC;
+      --text-secondary: #B8B2A7;
+      --text-muted:     #8C8577;
+      --accent:         #D19A66;
+      --accent-soft:    #C5865B;
+      --border:         #35322F;
+      --error:          #E06C75;
+      --success:        #98C379;
+      --warning:        #E5C07B;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: 'Space Grotesk', 'DM Sans', 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
       padding: 32px 16px 48px;
     }
 
     .shell {
       max-width: 1100px;
       margin: 0 auto;
-      position: relative;
-      z-index: 1;
     }
 
     .header {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       margin-bottom: 16px;
     }
 
@@ -56,24 +49,10 @@
       font-size: 28px;
       font-weight: 700;
       letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .badge {
-      background: var(--accent);
-      color: #2e3440;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
     }
 
     .subtitle {
-      color: var(--muted);
+      color: var(--text-secondary);
       font-size: 15px;
       max-width: 720px;
       line-height: 1.5;
@@ -86,17 +65,14 @@
     }
 
     .panel {
-      background: var(--panel);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px 18px;
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
     }
 
-    .controls {
-      display: grid;
-      gap: 12px;
-    }
+    .controls { display: grid; gap: 12px; }
 
     form {
       display: flex;
@@ -105,24 +81,21 @@
       align-items: flex-end;
     }
 
-    .field {
-      flex: 1;
-      min-width: 180px;
-    }
+    .field { flex: 1; min-width: 180px; }
 
     label {
       display: block;
       font-size: 13px;
       letter-spacing: 0.01em;
-      color: var(--muted);
+      color: var(--text-secondary);
       margin-bottom: 6px;
     }
 
     input, select {
       width: 100%;
-      background: var(--panel-2);
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
-      color: var(--text);
+      color: var(--text-primary);
       padding: 11px 12px;
       border-radius: 10px;
       font-size: 15px;
@@ -131,82 +104,15 @@
     }
 
     input:focus, select:focus {
-      border-color: var(--accent-2);
-      box-shadow: 0 0 0 3px rgba(136, 192, 208, 0.25);
+      border-color: var(--accent-soft);
+      box-shadow: 0 0 0 3px rgba(209, 154, 102, 0.25);
     }
 
-    button {
-      border: none;
-      cursor: pointer;
-    }
-
-    .range-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
-    }
-
-    .range-label {
-      min-width: 140px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .range-value {
-      color: var(--text);
-      font-weight: 600;
-      min-width: 80px;
-    }
-
-    input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--border);
-      outline: none;
-      border: 1px solid var(--border);
-      box-shadow: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--text);
-      border: 2px solid var(--accent);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      transition: transform 0.12s ease;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--text);
-      border: 2px solid var(--accent);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      transition: transform 0.12s ease;
-    }
-
-    input[type="range"]:active::-webkit-slider-thumb,
-    input[type="range"]:active::-moz-range-thumb {
-      transform: scale(1.05);
-    }
+    button { border: none; cursor: pointer; }
 
     .primary-btn {
       background: var(--accent);
-      color: #2e3440;
+      color: var(--bg-main);
       padding: 12px 16px;
       border-radius: 12px;
       font-weight: 700;
@@ -220,28 +126,17 @@
       transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
 
-    .primary-btn:hover {
-      transform: translateY(-1px);
-      background: var(--accent-2);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
-    }
+    .primary-btn:hover { transform: translateY(-1px); background: var(--accent-soft); box-shadow: 0 8px 18px rgba(0,0,0,0.3); }
+    .primary-btn:active { transform: translateY(0); }
 
-    .primary-btn:active {
-      transform: translateY(0);
-    }
-
-    .hint {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: -2px;
-    }
+    .hint { font-size: 13px; color: var(--text-muted); margin-top: -2px; }
 
     .status {
       padding: 10px 12px;
       border-radius: 12px;
-      background: var(--panel-2);
+      background: var(--bg-elevated);
       border: 1px solid var(--border);
-      color: var(--text);
+      color: var(--text-primary);
       font-size: 14px;
       display: flex;
       align-items: center;
@@ -249,14 +144,46 @@
       min-height: 44px;
     }
 
-    .status[data-tone="success"] { border-color: rgba(163, 190, 140, 0.6); color: #e5f1d8; }
-    .status[data-tone="warn"] { border-color: rgba(235, 203, 139, 0.7); color: #f6ead1; }
-    .status[data-tone="error"] { border-color: rgba(191, 97, 106, 0.7); color: #f5d3d8; }
+    .status[data-tone="success"] { border-color: rgba(152, 195, 121, 0.7); color: #e3f2d8; }
+    .status[data-tone="warn"] { border-color: rgba(229, 192, 123, 0.7); color: #f5ead4; }
+    .status[data-tone="error"] { border-color: rgba(224, 108, 117, 0.75); color: #f7d9de; }
 
-    .list {
-      display: grid;
-      gap: 8px;
+    .collapsible {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      overflow: hidden;
     }
+
+    .collapsible + .collapsible { margin-top: 6px; }
+
+    .collapsible-trigger {
+      width: 100%;
+      background: transparent;
+      color: var(--text-primary);
+      padding: 10px 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .pill {
+      background: var(--border);
+      color: var(--text-secondary);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chevron { font-size: 14px; color: var(--text-secondary); }
+
+    .collapsible-body { padding: 10px 12px 12px; }
+    .collapsible-body.collapsed { display: none; }
+
+    .list { display: grid; gap: 8px; }
 
     .player-row {
       display: grid;
@@ -265,45 +192,17 @@
       gap: 10px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: var(--panel-2);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
     }
 
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
-    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02); }
+    .player-meta { display: flex; flex-direction: column; gap: 2px; }
+    .player-name { font-weight: 600; letter-spacing: 0.01em; }
+    .player-sub { color: var(--text-muted); font-size: 13px; }
 
-    .player-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .player-name {
-      font-weight: 600;
-      letter-spacing: 0.01em;
-    }
-
-    .player-sub {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .toggle {
-      position: relative;
-      width: 46px;
-      height: 26px;
-    }
-
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
+    .toggle { position: relative; width: 46px; height: 26px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
     .slider {
       position: absolute;
       cursor: pointer;
@@ -313,7 +212,6 @@
       transition: background 0.2s ease;
       border: 1px solid var(--border);
     }
-
     .slider::before {
       position: absolute;
       content: "";
@@ -321,49 +219,87 @@
       width: 18px;
       left: 3px;
       top: 3px;
-      background: var(--text);
+      background: var(--text-primary);
       border-radius: 50%;
       transition: transform 0.2s ease, background 0.2s ease;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
     }
-
-    .toggle input:checked + .slider {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .toggle input:checked + .slider::before {
-      transform: translateX(20px);
-      background: #2e3440;
-    }
+    .toggle input:checked + .slider { background: var(--accent); border-color: var(--accent); }
+    .toggle input:checked + .slider::before { transform: translateX(20px); background: var(--bg-main); }
 
     .ghost-btn {
       background: transparent;
-      color: var(--muted);
+      color: var(--text-muted);
       padding: 6px 8px;
       border-radius: 10px;
       border: 1px solid transparent;
       transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
     }
+    .ghost-btn:hover { color: var(--text-primary); border-color: var(--border); background: var(--bg-surface); }
 
-    .ghost-btn:hover {
-      color: var(--text);
-      border-color: var(--border);
-      background: var(--panel);
+    .chart-panel { padding: 18px; display: grid; gap: 12px; }
+    .range-panel {
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      display: grid;
+      gap: 10px;
     }
+    .range-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 14px; }
+    .range-title { text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; color: var(--text-primary); font-size: 12px; }
+    .range-values { color: var(--text-secondary); font-weight: 600; font-size: 14px; white-space: nowrap; }
 
-    .chart-panel {
-      padding: 18px;
+    .single-range input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+      border: 1px solid var(--border);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
     }
+    .single-range input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .single-range input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+    .single-range input[type="range"]:active::-webkit-slider-thumb,
+    .single-range input[type="range"]:active::-moz-range-thumb { transform: scale(1.05); }
 
-    canvas {
+    .chart-wrap {
+      position: relative;
       width: 100%;
       height: 420px;
     }
 
+    canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
     @media (max-width: 720px) {
       body { padding: 20px 12px 36px; }
-      .header { flex-direction: column; align-items: flex-start; }
       form { flex-direction: column; align-items: stretch; }
       .player-row { grid-template-columns: auto 1fr auto; }
     }
@@ -372,13 +308,8 @@
 <body>
   <div class="shell">
     <div class="header">
-      <div>
-        <div class="title">
-          Chess ELO Tracker
-          <span class="badge">GitHub Pages Ready</span>
-        </div>
-        <div class="subtitle">Track Chess.com ratings for you and your friends. Add usernames, choose a time control, and toggle curves to see how everyone is progressing.</div>
-      </div>
+      <div class="title">Chess ELO Tracker</div>
+      <div class="subtitle">Track Chess.com ratings for you and your friends. Add usernames, choose a time control, and toggle curves to see how everyone is progressing.</div>
     </div>
 
     <div class="panels">
@@ -399,18 +330,33 @@
           </div>
           <button type="submit" class="primary-btn">Add player</button>
         </form>
-        <div class="range-row">
-          <div class="range-label">Time window</div>
-          <input type="range" id="window-range" min="30" max="365" value="180" step="15">
-          <div class="range-value"><span id="window-value">180</span> days</div>
-        </div>
         <div class="hint">Uses public Chess.com data. Fetches the last few months of games for the selected time control and adds the most recent rating from Chess.com stats.</div>
         <div id="status" class="status" data-tone="info">Waiting for players to track.</div>
-        <div class="list" id="player-list"></div>
+        <div class="collapsible">
+          <button class="collapsible-trigger" type="button" id="players-toggle" aria-expanded="true">
+            <span>Tracked players</span>
+            <span class="pill" id="player-count">0</span>
+            <span class="chevron" aria-hidden="true">v</span>
+          </button>
+          <div class="collapsible-body" id="players-body">
+            <div class="list" id="player-list"></div>
+          </div>
+        </div>
       </div>
 
       <div class="panel chart-panel">
-        <canvas id="elo-chart"></canvas>
+        <div class="range-panel">
+          <div class="range-header">
+            <span class="range-title">Time window</span>
+            <span class="range-values"><span id="window-value">180</span> days</span>
+          </div>
+          <div class="single-range">
+            <input type="range" id="window-range" min="30" max="365" value="180" step="15">
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="elo-chart"></canvas>
+        </div>
       </div>
     </div>
   </div>
@@ -418,10 +364,7 @@
   <script>
     (function () {
       const MONTHS_TO_FETCH = 6;
-      const DEFAULT_WINDOW_DAYS = 180;
-      const MIN_WINDOW = 30;
-      const MAX_WINDOW = 365;
-      const palette = ['#81a1c1', '#88c0d0', '#a3be8c', '#ebcb8b', '#d08770', '#b48ead', '#5e81ac', '#bf616a'];
+      const palette = ['#D19A66', '#C5865B', '#98C379', '#E5C07B', '#E06C75', '#B8B2A7', '#8C8577', '#E6E1DC'];
       const storageKey = 'elo-tracker:v1';
       const players = new Map();
       const listEl = document.getElementById('player-list');
@@ -431,17 +374,26 @@
       const timeClassEl = document.getElementById('time-class');
       const windowRangeEl = document.getElementById('window-range');
       const windowValueEl = document.getElementById('window-value');
+      const playersToggleEl = document.getElementById('players-toggle');
+      const playersBodyEl = document.getElementById('players-body');
+      const playerCountEl = document.getElementById('player-count');
       const ctx = document.getElementById('elo-chart');
+      const DEFAULT_WINDOW = 180;
+      const MIN_WINDOW = 30;
+      const MAX_WINDOW = 365;
       let chart = null;
       let colorIndex = 0;
-      let windowDays = DEFAULT_WINDOW_DAYS;
+      let domain = { min: null, max: null };
+      let windowDays = DEFAULT_WINDOW;
+      let playersExpanded = true;
 
       init();
 
       function init() {
-        syncWindowLabel();
         initChart();
+        requestAnimationFrame(() => chart?.resize());
         bindEvents();
+        syncWindowUI();
         restoreState();
       }
 
@@ -463,6 +415,7 @@
         });
 
         windowRangeEl.addEventListener('input', handleWindowChange);
+        playersToggleEl.addEventListener('click', togglePlayers);
       }
 
       function initChart() {
@@ -472,35 +425,30 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 400 },
+            animation: { duration: 300 },
             scales: {
               x: {
                 type: 'time',
                 time: { unit: 'week', tooltipFormat: 'MMM d, yyyy' },
-                grid: { color: 'rgba(236,239,244,0.06)' },
-                ticks: { color: '#d8dee9' }
+                grid: { color: 'rgba(230,225,220,0.08)' },
+                ticks: { color: '#B8B2A7' }
               },
               y: {
-                grid: { color: 'rgba(236,239,244,0.06)' },
-                ticks: { color: '#d8dee9' }
+                grid: { color: 'rgba(230,225,220,0.08)' },
+                ticks: { color: '#B8B2A7' }
               }
             },
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: '#3b4252',
-                borderColor: 'rgba(236,239,244,0.12)',
+                backgroundColor: '#2B2A28',
+                borderColor: 'rgba(53,50,47,0.7)',
                 borderWidth: 1,
                 padding: 10,
-                callbacks: {
-                  label: (ctx) => ctx.dataset.label + ': ' + ctx.formattedValue
-                }
+                callbacks: { label: (ctx) => ctx.dataset.label + ': ' + ctx.formattedValue }
               }
             },
-            interaction: {
-              mode: 'nearest',
-              intersect: false
-            }
+            interaction: { mode: 'nearest', intersect: false }
           }
         });
       }
@@ -512,20 +460,20 @@
 
       function clampWindow(value) {
         const num = parseInt(value, 10);
-        if (Number.isNaN(num)) return DEFAULT_WINDOW_DAYS;
+        if (Number.isNaN(num)) return DEFAULT_WINDOW;
         return Math.min(MAX_WINDOW, Math.max(MIN_WINDOW, num));
-      }
-
-      function syncWindowLabel() {
-        windowRangeEl.value = windowDays;
-        windowValueEl.textContent = windowDays;
       }
 
       function handleWindowChange() {
         windowDays = clampWindow(windowRangeEl.value);
-        syncWindowLabel();
+        syncWindowUI();
         updateChart();
         persistState();
+      }
+
+      function syncWindowUI() {
+        windowRangeEl.value = windowDays;
+        windowValueEl.textContent = windowDays;
       }
 
       function pickColor(preferred) {
@@ -538,6 +486,7 @@
       function persistState() {
         const snapshot = {
           timeClass: timeClassEl.value,
+          playersExpanded,
           windowDays,
           players: Array.from(players.values()).map((p) => ({
             username: p.username,
@@ -566,7 +515,12 @@
 
         if (saved?.windowDays) {
           windowDays = clampWindow(saved.windowDays);
-          syncWindowLabel();
+          syncWindowUI();
+        }
+
+        if (typeof saved?.playersExpanded === 'boolean') {
+          playersExpanded = saved.playersExpanded;
+          applyPlayersCollapse();
         }
 
         if (saved?.players?.length) {
@@ -580,6 +534,8 @@
             });
           }
           setStatus('Restored saved players.', 'success');
+        } else {
+          applyPlayersCollapse();
         }
       }
 
@@ -591,6 +547,7 @@
           color: p.color
         }));
         players.clear();
+        domain = { min: null, max: null };
         renderList();
         updateChart();
         persistState();
@@ -606,6 +563,8 @@
         if (snapshots.length) {
           setStatus('Updated ' + snapshots.length + ' players for ' + timeClassEl.value + '.', 'success');
         }
+        computeDomain();
+        syncWindowUI();
       }
 
       async function addPlayer(rawName, options = {}) {
@@ -626,21 +585,18 @@
         const visible = options.visible !== undefined ? options.visible : true;
 
         try {
-          if (!options.silent) {
-            setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
-          }
+          if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
           const points = await fetchRatings(username, timeClassEl.value);
           if (!points.length) {
             setStatus(display + ' has no ' + timeClassEl.value + ' games recently.', 'warn');
             return;
           }
           players.set(username, { username, displayName: display, color, data: points, visible });
+          updateDomainWith(points);
           renderList();
           updateChart();
           persistState();
-          if (!options.silent) {
-            setStatus('Added ' + display + ' (' + points.length + ' points).', 'success');
-          }
+          if (!options.silent) setStatus('Added ' + display + ' (' + points.length + ' points).', 'success');
         } catch (err) {
           console.error(err);
           setStatus(err.message || 'Unable to fetch data for ' + display + '.', 'error');
@@ -649,9 +605,7 @@
 
       async function fetchRatings(username, timeClass) {
         const archivesRes = await fetch('https://api.chess.com/pub/player/' + username + '/games/archives');
-        if (!archivesRes.ok) {
-          throw new Error('Could not find ' + username + ' on Chess.com.');
-        }
+        if (!archivesRes.ok) throw new Error('Could not find ' + username + ' on Chess.com.');
 
         const archiveData = await archivesRes.json();
         const archives = archiveData.archives?.slice(-MONTHS_TO_FETCH) || [];
@@ -699,13 +653,23 @@
         }
 
         const points = Array.from(dailyMap.values()).sort((a, b) => a.date - b.date);
+        updateDomainWith(points);
         return points;
+      }
+
+      function updateDomainWith(points) {
+        if (!points?.length) return;
+        const first = points[0].date;
+        const last = points[points.length - 1].date;
+        if (!domain.min || first < domain.min) domain.min = first;
+        if (!domain.max || last > domain.max) domain.max = last;
       }
 
       function renderList() {
         listEl.innerHTML = '';
         if (!players.size) {
-          listEl.innerHTML = '<div class="player-sub">No players yet. Add a Chess.com username to start tracking.</div>';
+          listEl.innerHTML = '<div class=\"player-sub\">No players yet. Add a Chess.com username to start tracking.</div>';
+          updatePlayerCount();
           return;
         }
 
@@ -725,7 +689,7 @@
           name.textContent = player.displayName;
           const sub = document.createElement('div');
           sub.className = 'player-sub';
-          sub.textContent = (player.data?.length || 0) + ' points • ' + timeClassEl.value;
+          sub.textContent = (player.data?.length || 0) + ' points - ' + timeClassEl.value;
           meta.appendChild(name);
           meta.appendChild(sub);
           row.appendChild(meta);
@@ -760,18 +724,47 @@
 
           listEl.appendChild(row);
         });
+        updatePlayerCount();
+      }
+
+      function updatePlayerCount() {
+        playerCountEl.textContent = players.size;
+      }
+
+      function togglePlayers() {
+        playersExpanded = !playersExpanded;
+        applyPlayersCollapse();
+        persistState();
+      }
+
+      function applyPlayersCollapse() {
+        playersBodyEl.classList.toggle('collapsed', !playersExpanded);
+        playersToggleEl.setAttribute('aria-expanded', playersExpanded);
+        playersToggleEl.querySelector('.chevron').textContent = playersExpanded ? 'v' : '>';
       }
 
       function updateChart() {
+        computeDomain();
+        if (!players.size || !domain.min || !domain.max) {
+          domain = { min: null, max: null };
+          chart.options.scales.x.min = undefined;
+          chart.options.scales.x.max = undefined;
+          chart.data.datasets = [];
+          chart.update('none');
+          syncWindowUI();
+          return;
+        }
         const datasets = [];
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - windowDays);
+        const endBound = domain.max;
+        const startBound = new Date(endBound);
+        startBound.setDate(startBound.getDate() - windowDays);
+
         players.forEach((player) => {
           if (!player.visible) return;
           datasets.push({
             label: player.displayName,
             data: (player.data || [])
-              .filter((p) => !windowDays || p.date >= cutoff)
+              .filter((p) => (!startBound || p.date >= startBound) && (!endBound || p.date <= endBound))
               .map((p) => ({ x: p.date, y: p.rating })),
             borderColor: player.color,
             backgroundColor: player.color + '33',
@@ -784,8 +777,24 @@
           });
         });
 
+        chart.options.scales.x.min = startBound || undefined;
+        chart.options.scales.x.max = endBound || undefined;
         chart.data.datasets = datasets;
         chart.update('active');
+        syncWindowUI();
+      }
+
+      function computeDomain() {
+        let min = null;
+        let max = null;
+        players.forEach((p) => {
+          if (!p.data?.length) return;
+          const first = p.data[0].date;
+          const last = p.data[p.data.length - 1].date;
+          if (!min || first < min) min = first;
+          if (!max || last > max) max = last;
+        });
+        domain = { min, max };
       }
     })();
   </script>
