@@ -261,47 +261,36 @@
       border: 1px solid var(--border);
       background: var(--bg-elevated);
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
-    .range-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 14px; }
+    .range-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 14px; flex-wrap: wrap; }
     .range-title { text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; color: var(--text-primary); font-size: 12px; }
-    .range-values { color: var(--text-secondary); font-weight: 600; font-size: 14px; white-space: nowrap; }
+    .range-values { color: var(--text-secondary); font-weight: 600; font-size: 14px; white-space: nowrap; margin-left: auto; }
 
-    .single-range input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 100%;
-      height: 12px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, var(--accent), var(--accent-soft));
+    .range-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .range-buttons button {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
       border: 1px solid var(--border);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
       cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
     }
-    .single-range input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--text-primary);
-      border: 2px solid var(--accent);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      transition: transform 0.12s ease;
+    .range-buttons button:hover { border-color: var(--accent-soft); color: #f1e3d4; }
+    .range-buttons button:active { transform: translateY(1px); }
+    .range-buttons button.active {
+      background: linear-gradient(120deg, var(--accent), var(--accent-soft));
+      color: var(--bg-main);
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     }
-    .single-range input[type="range"]::-moz-range-thumb {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: var(--text-primary);
-      border: 2px solid var(--accent);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      cursor: pointer;
-      transition: transform 0.12s ease;
-    }
-    .single-range input[type="range"]:active::-webkit-slider-thumb,
-    .single-range input[type="range"]:active::-moz-range-thumb { transform: scale(1.05); }
 
     .chart-wrap {
       position: relative;
@@ -364,11 +353,15 @@
       <div class="panel chart-panel">
         <div class="range-panel">
           <div class="range-header">
-            <span class="range-title">Time window</span>
-            <span class="range-values"><span id="window-value">180</span> days</span>
-          </div>
-          <div class="single-range">
-            <input type="range" id="window-range" min="30" max="365" value="180" step="15">
+            <div class="range-buttons">
+              <button type="button" data-window="7">1w</button>
+              <button type="button" data-window="30">1m</button>
+              <button type="button" data-window="90">3m</button>
+              <button type="button" data-window="180" class="active">6m</button>
+              <button type="button" data-window="365">1y</button>
+              <button type="button" data-window="1095">3y</button>
+            </div>
+            <span class="range-values" id="window-value">180 days</span>
           </div>
         </div>
         <div class="chart-wrap">
@@ -389,15 +382,15 @@
       const formEl = document.getElementById('add-form');
       const usernameEl = document.getElementById('username');
       const timeClassEl = document.getElementById('time-class');
-      const windowRangeEl = document.getElementById('window-range');
       const windowValueEl = document.getElementById('window-value');
+      const windowButtons = Array.from(document.querySelectorAll('[data-window]'));
       const playersToggleEl = document.getElementById('players-toggle');
       const playersBodyEl = document.getElementById('players-body');
       const playerCountEl = document.getElementById('player-count');
       const ctx = document.getElementById('elo-chart');
       const DEFAULT_WINDOW = 180;
-      const MIN_WINDOW = 30;
-      const MAX_WINDOW = 365;
+      const MIN_WINDOW = 7;
+      const MAX_WINDOW = 1095;
       let chart = null;
       let colorIndex = 0;
       let domain = { min: null, max: null };
@@ -431,7 +424,7 @@
           refreshAllPlayers();
         });
 
-        windowRangeEl.addEventListener('input', handleWindowChange);
+        windowButtons.forEach((btn) => btn.addEventListener('click', () => handleWindowSelect(btn)));
         playersToggleEl.addEventListener('click', togglePlayers);
       }
 
@@ -481,16 +474,32 @@
         return Math.min(MAX_WINDOW, Math.max(MIN_WINDOW, num));
       }
 
-      function handleWindowChange() {
-        windowDays = clampWindow(windowRangeEl.value);
+      function handleWindowSelect(button) {
+        const val = clampWindow(button.dataset.window);
+        windowDays = val;
         syncWindowUI();
         updateChart();
         persistState();
       }
 
       function syncWindowUI() {
-        windowRangeEl.value = windowDays;
-        windowValueEl.textContent = windowDays;
+        windowValueEl.textContent = formatWindowLabel(windowDays);
+        windowButtons.forEach((btn) => {
+          const val = parseInt(btn.dataset.window, 10);
+          btn.classList.toggle('active', val === windowDays);
+        });
+      }
+
+      function formatWindowLabel(days) {
+        const map = {
+          7: '1 week',
+          30: '1 month',
+          90: '3 months',
+          180: '6 months',
+          365: '1 year',
+          1095: '3 years'
+        };
+        return map[days] || days + ' days';
       }
 
       function pickColor(preferred) {
@@ -591,20 +600,21 @@
         const existing = players.get(username);
         if (existing && !options.forceRefresh) {
           existing.visible = options.visible ?? true;
+          existing.disabled = options.disabled ?? existing.disabled ?? false;
           renderList();
           updateChart();
           persistState();
           return;
         }
 
-      const display = rawName.trim();
-      const color = pickColor(options.preferredColor || existing?.color);
-      const visible = options.visible !== undefined ? options.visible : true;
+        const display = rawName.trim();
+        const color = pickColor(options.preferredColor || existing?.color);
+        const visible = options.visible !== undefined ? options.visible : true;
 
-      try {
-        if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
-        const points = await fetchRatings(username, timeClassEl.value);
-        if (!points.length) {
+        try {
+          if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
+          const points = await fetchRatings(username, timeClassEl.value);
+          if (!points.length) {
             players.set(username, {
               username,
               displayName: display,
