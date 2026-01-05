@@ -11,16 +11,16 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
   <style>
     :root {
-      --bg: #0c1424;
-      --panel: #0f1b31;
-      --panel-2: #0c1f3f;
-      --text: #e6edf7;
-      --muted: #93a3bf;
-      --border: #1f2c46;
-      --accent: #4ade80;
-      --accent-2: #22d3ee;
-      --warn: #fbbf24;
-      --error: #f43f5e;
+      --bg: #2e3440;
+      --panel: #3b4252;
+      --panel-2: #434c5e;
+      --text: #eceff4;
+      --muted: #d8dee9;
+      --border: #4c566a;
+      --accent: #88c0d0;
+      --accent-2: #81a1c1;
+      --warn: #ebcb8b;
+      --error: #bf616a;
     }
 
     * {
@@ -31,9 +31,7 @@
       margin: 0;
       min-height: 100vh;
       font-family: 'Space Grotesk', 'DM Sans', 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at 20% 20%, #11264b 0, rgba(12, 20, 36, 0) 35%),
-                  radial-gradient(circle at 80% 0%, #0c8acb 0, rgba(12, 138, 203, 0) 40%),
-                  linear-gradient(135deg, #0c1424 0%, #081020 100%);
+      background: var(--bg);
       color: var(--text);
       padding: 32px 16px 48px;
     }
@@ -64,9 +62,9 @@
     }
 
     .badge {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #051224;
-      padding: 6px 10px;
+      background: var(--accent);
+      color: #2e3440;
+      padding: 6px 12px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 700;
@@ -88,12 +86,11 @@
     }
 
     .panel {
-      background: linear-gradient(160deg, rgba(15, 27, 49, 0.9), rgba(12, 31, 63, 0.9));
+      background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 16px;
       padding: 16px 18px;
-      box-shadow: 0 10px 45px rgba(2, 8, 24, 0.35);
-      backdrop-filter: blur(6px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
     }
 
     .controls {
@@ -123,7 +120,7 @@
 
     input, select {
       width: 100%;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--panel-2);
       border: 1px solid var(--border);
       color: var(--text);
       padding: 11px 12px;
@@ -135,7 +132,7 @@
 
     input:focus, select:focus {
       border-color: var(--accent-2);
-      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+      box-shadow: 0 0 0 3px rgba(136, 192, 208, 0.25);
     }
 
     button {
@@ -143,9 +140,73 @@
       cursor: pointer;
     }
 
+    .range-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+
+    .range-label {
+      min-width: 140px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .range-value {
+      color: var(--text);
+      font-weight: 600;
+      min-width: 80px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--border);
+      outline: none;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--text);
+      border: 2px solid var(--accent);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    input[type="range"]:active::-webkit-slider-thumb,
+    input[type="range"]:active::-moz-range-thumb {
+      transform: scale(1.05);
+    }
+
     .primary-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #041021;
+      background: var(--accent);
+      color: #2e3440;
       padding: 12px 16px;
       border-radius: 12px;
       font-weight: 700;
@@ -155,13 +216,14 @@
       gap: 8px;
       min-width: 150px;
       justify-content: center;
-      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.22);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
 
     .primary-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 12px 32px rgba(34, 211, 238, 0.28);
+      background: var(--accent-2);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
     }
 
     .primary-btn:active {
@@ -177,7 +239,7 @@
     .status {
       padding: 10px 12px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--panel-2);
       border: 1px solid var(--border);
       color: var(--text);
       font-size: 14px;
@@ -187,9 +249,9 @@
       min-height: 44px;
     }
 
-    .status[data-tone="success"] { border-color: rgba(74, 222, 128, 0.5); color: #bbf7d0; }
-    .status[data-tone="warn"] { border-color: rgba(251, 191, 36, 0.6); color: #fde68a; }
-    .status[data-tone="error"] { border-color: rgba(244, 63, 94, 0.65); color: #fecdd3; }
+    .status[data-tone="success"] { border-color: rgba(163, 190, 140, 0.6); color: #e5f1d8; }
+    .status[data-tone="warn"] { border-color: rgba(235, 203, 139, 0.7); color: #f6ead1; }
+    .status[data-tone="error"] { border-color: rgba(191, 97, 106, 0.7); color: #f5d3d8; }
 
     .list {
       display: grid;
@@ -203,7 +265,7 @@
       gap: 10px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--panel-2);
       border: 1px solid var(--border);
     }
 
@@ -246,7 +308,7 @@
       position: absolute;
       cursor: pointer;
       inset: 0;
-      background: #23324f;
+      background: var(--border);
       border-radius: 999px;
       transition: background 0.2s ease;
       border: 1px solid var(--border);
@@ -266,13 +328,13 @@
     }
 
     .toggle input:checked + .slider {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      border-color: transparent;
+      background: var(--accent);
+      border-color: var(--accent);
     }
 
     .toggle input:checked + .slider::before {
       transform: translateX(20px);
-      background: #0a1425;
+      background: #2e3440;
     }
 
     .ghost-btn {
@@ -285,9 +347,9 @@
     }
 
     .ghost-btn:hover {
-      color: #f5b4c4;
+      color: var(--text);
       border-color: var(--border);
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--panel);
     }
 
     .chart-panel {
@@ -337,6 +399,11 @@
           </div>
           <button type="submit" class="primary-btn">Add player</button>
         </form>
+        <div class="range-row">
+          <div class="range-label">Time window</div>
+          <input type="range" id="window-range" min="30" max="365" value="180" step="15">
+          <div class="range-value"><span id="window-value">180</span> days</div>
+        </div>
         <div class="hint">Uses public Chess.com data. Fetches the last few months of games for the selected time control and adds the most recent rating from Chess.com stats.</div>
         <div id="status" class="status" data-tone="info">Waiting for players to track.</div>
         <div class="list" id="player-list"></div>
@@ -351,7 +418,10 @@
   <script>
     (function () {
       const MONTHS_TO_FETCH = 6;
-      const palette = ['#7dd3fc', '#fb7185', '#4ade80', '#c084fc', '#fbbf24', '#22d3ee', '#f472b6', '#a3e635'];
+      const DEFAULT_WINDOW_DAYS = 180;
+      const MIN_WINDOW = 30;
+      const MAX_WINDOW = 365;
+      const palette = ['#81a1c1', '#88c0d0', '#a3be8c', '#ebcb8b', '#d08770', '#b48ead', '#5e81ac', '#bf616a'];
       const storageKey = 'elo-tracker:v1';
       const players = new Map();
       const listEl = document.getElementById('player-list');
@@ -359,13 +429,17 @@
       const formEl = document.getElementById('add-form');
       const usernameEl = document.getElementById('username');
       const timeClassEl = document.getElementById('time-class');
+      const windowRangeEl = document.getElementById('window-range');
+      const windowValueEl = document.getElementById('window-value');
       const ctx = document.getElementById('elo-chart');
       let chart = null;
       let colorIndex = 0;
+      let windowDays = DEFAULT_WINDOW_DAYS;
 
       init();
 
       function init() {
+        syncWindowLabel();
         initChart();
         bindEvents();
         restoreState();
@@ -387,6 +461,8 @@
           setStatus('Reloading data for ' + timeClassEl.value + '...', 'info');
           refreshAllPlayers();
         });
+
+        windowRangeEl.addEventListener('input', handleWindowChange);
       }
 
       function initChart() {
@@ -401,19 +477,19 @@
               x: {
                 type: 'time',
                 time: { unit: 'week', tooltipFormat: 'MMM d, yyyy' },
-                grid: { color: 'rgba(255,255,255,0.04)' },
-                ticks: { color: '#9fb1d0' }
+                grid: { color: 'rgba(236,239,244,0.06)' },
+                ticks: { color: '#d8dee9' }
               },
               y: {
-                grid: { color: 'rgba(255,255,255,0.05)' },
-                ticks: { color: '#9fb1d0' }
+                grid: { color: 'rgba(236,239,244,0.06)' },
+                ticks: { color: '#d8dee9' }
               }
             },
             plugins: {
               legend: { display: false },
               tooltip: {
-                backgroundColor: '#0f1b31',
-                borderColor: 'rgba(255,255,255,0.08)',
+                backgroundColor: '#3b4252',
+                borderColor: 'rgba(236,239,244,0.12)',
                 borderWidth: 1,
                 padding: 10,
                 callbacks: {
@@ -434,6 +510,24 @@
         statusEl.setAttribute('data-tone', tone);
       }
 
+      function clampWindow(value) {
+        const num = parseInt(value, 10);
+        if (Number.isNaN(num)) return DEFAULT_WINDOW_DAYS;
+        return Math.min(MAX_WINDOW, Math.max(MIN_WINDOW, num));
+      }
+
+      function syncWindowLabel() {
+        windowRangeEl.value = windowDays;
+        windowValueEl.textContent = windowDays;
+      }
+
+      function handleWindowChange() {
+        windowDays = clampWindow(windowRangeEl.value);
+        syncWindowLabel();
+        updateChart();
+        persistState();
+      }
+
       function pickColor(preferred) {
         if (preferred) return preferred;
         const color = palette[colorIndex % palette.length];
@@ -444,6 +538,7 @@
       function persistState() {
         const snapshot = {
           timeClass: timeClassEl.value,
+          windowDays,
           players: Array.from(players.values()).map((p) => ({
             username: p.username,
             visible: p.visible,
@@ -467,6 +562,11 @@
 
         if (saved?.timeClass) {
           timeClassEl.value = saved.timeClass;
+        }
+
+        if (saved?.windowDays) {
+          windowDays = clampWindow(saved.windowDays);
+          syncWindowLabel();
         }
 
         if (saved?.players?.length) {
@@ -664,11 +764,15 @@
 
       function updateChart() {
         const datasets = [];
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - windowDays);
         players.forEach((player) => {
           if (!player.visible) return;
           datasets.push({
             label: player.displayName,
-            data: (player.data || []).map((p) => ({ x: p.date, y: p.rating })),
+            data: (player.data || [])
+              .filter((p) => !windowDays || p.date >= cutoff)
+              .map((p) => ({ x: p.date, y: p.rating })),
             borderColor: player.color,
             backgroundColor: player.color + '33',
             tension: 0.32,
