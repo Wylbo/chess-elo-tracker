@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess ELO Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+  <style>
+    :root {
+      --bg: #0c1424;
+      --panel: #0f1b31;
+      --panel-2: #0c1f3f;
+      --text: #e6edf7;
+      --muted: #93a3bf;
+      --border: #1f2c46;
+      --accent: #4ade80;
+      --accent-2: #22d3ee;
+      --warn: #fbbf24;
+      --error: #f43f5e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Space Grotesk', 'DM Sans', 'Segoe UI', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #11264b 0, rgba(12, 20, 36, 0) 35%),
+                  radial-gradient(circle at 80% 0%, #0c8acb 0, rgba(12, 138, 203, 0) 40%),
+                  linear-gradient(135deg, #0c1424 0%, #081020 100%);
+      color: var(--text);
+      padding: 32px 16px 48px;
+    }
+
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #051224;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    .panels {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .panel {
+      background: linear-gradient(160deg, rgba(15, 27, 49, 0.9), rgba(12, 31, 63, 0.9));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 10px 45px rgba(2, 8, 24, 0.35);
+      backdrop-filter: blur(6px);
+    }
+
+    .controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+    }
+
+    .field {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #041021;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 150px;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(34, 211, 238, 0.22);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 32px rgba(34, 211, 238, 0.28);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0);
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: -2px;
+    }
+
+    .status {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+
+    .status[data-tone="success"] { border-color: rgba(74, 222, 128, 0.5); color: #bbf7d0; }
+    .status[data-tone="warn"] { border-color: rgba(251, 191, 36, 0.6); color: #fde68a; }
+    .status[data-tone="error"] { border-color: rgba(244, 63, 94, 0.65); color: #fecdd3; }
+
+    .list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+    }
+
+    .player-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .player-name {
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .player-sub {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .toggle {
+      position: relative;
+      width: 46px;
+      height: 26px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #23324f;
+      border-radius: 999px;
+      transition: background 0.2s ease;
+      border: 1px solid var(--border);
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      top: 3px;
+      background: var(--text);
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .toggle input:checked + .slider {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+    }
+
+    .toggle input:checked + .slider::before {
+      transform: translateX(20px);
+      background: #0a1425;
+    }
+
+    .ghost-btn {
+      background: transparent;
+      color: var(--muted);
+      padding: 6px 8px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .ghost-btn:hover {
+      color: #f5b4c4;
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .chart-panel {
+      padding: 18px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 420px;
+    }
+
+    @media (max-width: 720px) {
+      body { padding: 20px 12px 36px; }
+      .header { flex-direction: column; align-items: flex-start; }
+      form { flex-direction: column; align-items: stretch; }
+      .player-row { grid-template-columns: auto 1fr auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="header">
+      <div>
+        <div class="title">
+          Chess ELO Tracker
+          <span class="badge">GitHub Pages Ready</span>
+        </div>
+        <div class="subtitle">Track Chess.com ratings for you and your friends. Add usernames, choose a time control, and toggle curves to see how everyone is progressing.</div>
+      </div>
+    </div>
+
+    <div class="panels">
+      <div class="panel controls">
+        <form id="add-form">
+          <div class="field">
+            <label for="username">Chess.com username</label>
+            <input id="username" name="username" type="text" autocomplete="off" placeholder="e.g. hikaru" required>
+          </div>
+          <div class="field" style="max-width: 190px;">
+            <label for="time-class">Time control</label>
+            <select id="time-class" name="time-class">
+              <option value="blitz">Blitz</option>
+              <option value="bullet">Bullet</option>
+              <option value="rapid">Rapid</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
+          <button type="submit" class="primary-btn">Add player</button>
+        </form>
+        <div class="hint">Uses public Chess.com data. Fetches the last few months of games for the selected time control and adds the most recent rating from Chess.com stats.</div>
+        <div id="status" class="status" data-tone="info">Waiting for players to track.</div>
+        <div class="list" id="player-list"></div>
+      </div>
+
+      <div class="panel chart-panel">
+        <canvas id="elo-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const MONTHS_TO_FETCH = 6;
+      const palette = ['#7dd3fc', '#fb7185', '#4ade80', '#c084fc', '#fbbf24', '#22d3ee', '#f472b6', '#a3e635'];
+      const storageKey = 'elo-tracker:v1';
+      const players = new Map();
+      const listEl = document.getElementById('player-list');
+      const statusEl = document.getElementById('status');
+      const formEl = document.getElementById('add-form');
+      const usernameEl = document.getElementById('username');
+      const timeClassEl = document.getElementById('time-class');
+      const ctx = document.getElementById('elo-chart');
+      let chart = null;
+      let colorIndex = 0;
+
+      init();
+
+      function init() {
+        initChart();
+        bindEvents();
+        restoreState();
+      }
+
+      function bindEvents() {
+        formEl.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const username = usernameEl.value.trim();
+          if (!username) {
+            setStatus('Enter a Chess.com username to track.', 'warn');
+            return;
+          }
+          addPlayer(username);
+          usernameEl.value = '';
+        });
+
+        timeClassEl.addEventListener('change', () => {
+          setStatus('Reloading data for ' + timeClassEl.value + '...', 'info');
+          refreshAllPlayers();
+        });
+      }
+
+      function initChart() {
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: { datasets: [] },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 400 },
+            scales: {
+              x: {
+                type: 'time',
+                time: { unit: 'week', tooltipFormat: 'MMM d, yyyy' },
+                grid: { color: 'rgba(255,255,255,0.04)' },
+                ticks: { color: '#9fb1d0' }
+              },
+              y: {
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { color: '#9fb1d0' }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#0f1b31',
+                borderColor: 'rgba(255,255,255,0.08)',
+                borderWidth: 1,
+                padding: 10,
+                callbacks: {
+                  label: (ctx) => ctx.dataset.label + ': ' + ctx.formattedValue
+                }
+              }
+            },
+            interaction: {
+              mode: 'nearest',
+              intersect: false
+            }
+          }
+        });
+      }
+
+      function setStatus(message, tone = 'info') {
+        statusEl.textContent = message;
+        statusEl.setAttribute('data-tone', tone);
+      }
+
+      function pickColor(preferred) {
+        if (preferred) return preferred;
+        const color = palette[colorIndex % palette.length];
+        colorIndex += 1;
+        return color;
+      }
+
+      function persistState() {
+        const snapshot = {
+          timeClass: timeClassEl.value,
+          players: Array.from(players.values()).map((p) => ({
+            username: p.username,
+            visible: p.visible,
+            color: p.color
+          }))
+        };
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(snapshot));
+        } catch (err) {
+          console.warn('Could not persist state', err);
+        }
+      }
+
+      async function restoreState() {
+        let saved = null;
+        try {
+          saved = JSON.parse(localStorage.getItem(storageKey));
+        } catch (err) {
+          saved = null;
+        }
+
+        if (saved?.timeClass) {
+          timeClassEl.value = saved.timeClass;
+        }
+
+        if (saved?.players?.length) {
+          setStatus('Restoring ' + saved.players.length + ' saved players...', 'info');
+          for (const entry of saved.players) {
+            await addPlayer(entry.username, {
+              silent: true,
+              visible: entry.visible !== false,
+              preferredColor: entry.color,
+              forceRefresh: true
+            });
+          }
+          setStatus('Restored saved players.', 'success');
+        }
+      }
+
+      async function refreshAllPlayers() {
+        const snapshots = Array.from(players.values()).map((p) => ({
+          username: p.username,
+          displayName: p.displayName,
+          visible: p.visible,
+          color: p.color
+        }));
+        players.clear();
+        renderList();
+        updateChart();
+        persistState();
+
+        for (const entry of snapshots) {
+          await addPlayer(entry.displayName || entry.username, {
+            silent: true,
+            forceRefresh: true,
+            preferredColor: entry.color,
+            visible: entry.visible
+          });
+        }
+        if (snapshots.length) {
+          setStatus('Updated ' + snapshots.length + ' players for ' + timeClassEl.value + '.', 'success');
+        }
+      }
+
+      async function addPlayer(rawName, options = {}) {
+        const username = rawName.trim().toLowerCase();
+        if (!username) return;
+
+        const existing = players.get(username);
+        if (existing && !options.forceRefresh) {
+          existing.visible = options.visible ?? true;
+          renderList();
+          updateChart();
+          persistState();
+          return;
+        }
+
+        const display = rawName.trim();
+        const color = pickColor(options.preferredColor || existing?.color);
+        const visible = options.visible !== undefined ? options.visible : true;
+
+        try {
+          if (!options.silent) {
+            setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
+          }
+          const points = await fetchRatings(username, timeClassEl.value);
+          if (!points.length) {
+            setStatus(display + ' has no ' + timeClassEl.value + ' games recently.', 'warn');
+            return;
+          }
+          players.set(username, { username, displayName: display, color, data: points, visible });
+          renderList();
+          updateChart();
+          persistState();
+          if (!options.silent) {
+            setStatus('Added ' + display + ' (' + points.length + ' points).', 'success');
+          }
+        } catch (err) {
+          console.error(err);
+          setStatus(err.message || 'Unable to fetch data for ' + display + '.', 'error');
+        }
+      }
+
+      async function fetchRatings(username, timeClass) {
+        const archivesRes = await fetch('https://api.chess.com/pub/player/' + username + '/games/archives');
+        if (!archivesRes.ok) {
+          throw new Error('Could not find ' + username + ' on Chess.com.');
+        }
+
+        const archiveData = await archivesRes.json();
+        const archives = archiveData.archives?.slice(-MONTHS_TO_FETCH) || [];
+        const dailyMap = new Map();
+
+        for (const archiveUrl of archives.reverse()) {
+          try {
+            const res = await fetch(archiveUrl);
+            if (!res.ok) continue;
+            const { games } = await res.json();
+            (games || []).forEach((game) => {
+              if (game.time_class !== timeClass) return;
+              const lowerWhite = game.white?.username?.toLowerCase();
+              const lowerBlack = game.black?.username?.toLowerCase();
+              const isWhite = lowerWhite === username;
+              const isBlack = lowerBlack === username;
+              if (!isWhite && !isBlack) return;
+              const rating = isWhite ? game.white?.rating : game.black?.rating;
+              if (!rating) return;
+              const ts = game.end_time || game.start_time;
+              if (!ts) return;
+              const date = new Date(ts * 1000);
+              const key = date.toISOString().slice(0, 10);
+              dailyMap.set(key, { date: new Date(key), rating });
+            });
+          } catch (err) {
+            console.warn('Archive fetch failed for', archiveUrl, err);
+          }
+        }
+
+        try {
+          const statsRes = await fetch('https://api.chess.com/pub/player/' + username + '/stats');
+          if (statsRes.ok) {
+            const stats = await statsRes.json();
+            const key = 'chess_' + timeClass;
+            const lastRating = stats[key]?.last?.rating;
+            if (lastRating) {
+              const today = new Date();
+              const todayKey = today.toISOString().slice(0, 10);
+              dailyMap.set(todayKey, { date: new Date(todayKey), rating: lastRating });
+            }
+          }
+        } catch (err) {
+          console.warn('Stats fetch failed for', username, err);
+        }
+
+        const points = Array.from(dailyMap.values()).sort((a, b) => a.date - b.date);
+        return points;
+      }
+
+      function renderList() {
+        listEl.innerHTML = '';
+        if (!players.size) {
+          listEl.innerHTML = '<div class="player-sub">No players yet. Add a Chess.com username to start tracking.</div>';
+          return;
+        }
+
+        players.forEach((player) => {
+          const row = document.createElement('div');
+          row.className = 'player-row';
+
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+          dot.style.background = player.color;
+          row.appendChild(dot);
+
+          const meta = document.createElement('div');
+          meta.className = 'player-meta';
+          const name = document.createElement('div');
+          name.className = 'player-name';
+          name.textContent = player.displayName;
+          const sub = document.createElement('div');
+          sub.className = 'player-sub';
+          sub.textContent = (player.data?.length || 0) + ' points • ' + timeClassEl.value;
+          meta.appendChild(name);
+          meta.appendChild(sub);
+          row.appendChild(meta);
+
+          const toggle = document.createElement('label');
+          toggle.className = 'toggle';
+          const input = document.createElement('input');
+          input.type = 'checkbox';
+          input.checked = player.visible;
+          input.addEventListener('change', () => {
+            player.visible = input.checked;
+            updateChart();
+            persistState();
+          });
+          const slider = document.createElement('span');
+          slider.className = 'slider';
+          toggle.appendChild(input);
+          toggle.appendChild(slider);
+          row.appendChild(toggle);
+
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'ghost-btn';
+          removeBtn.type = 'button';
+          removeBtn.textContent = 'Remove';
+          removeBtn.addEventListener('click', () => {
+            players.delete(player.username);
+            renderList();
+            updateChart();
+            persistState();
+          });
+          row.appendChild(removeBtn);
+
+          listEl.appendChild(row);
+        });
+      }
+
+      function updateChart() {
+        const datasets = [];
+        players.forEach((player) => {
+          if (!player.visible) return;
+          datasets.push({
+            label: player.displayName,
+            data: (player.data || []).map((p) => ({ x: p.date, y: p.rating })),
+            borderColor: player.color,
+            backgroundColor: player.color + '33',
+            tension: 0.32,
+            borderWidth: 2.5,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            fill: false,
+            spanGaps: true
+          });
+        });
+
+        chart.data.datasets = datasets;
+        chart.update('active');
+      }
+    })();
+  </script>
+</body>
+</html>
