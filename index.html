@@ -743,6 +743,28 @@
         playersToggleEl.querySelector('.chevron').textContent = playersExpanded ? 'v' : '>';
       }
 
+      function buildWindowedSeries(points, startBound, endBound) {
+        if (!points?.length) return [];
+        const inRange = [];
+        let carry = null;
+
+        for (const point of points) {
+          if (point.date < startBound) {
+            carry = point;
+            continue;
+          }
+          if (point.date > endBound) break;
+          inRange.push(point);
+        }
+
+        // If the player has a rating before the visible window, anchor the line to the window start.
+        if (carry && inRange.length) {
+          inRange.unshift({ date: new Date(startBound), rating: carry.rating });
+        }
+
+        return inRange.map((p) => ({ x: p.date, y: p.rating }));
+      }
+
       function updateChart() {
         computeDomain();
         if (!players.size || !domain.min || !domain.max) {
@@ -761,11 +783,11 @@
 
         players.forEach((player) => {
           if (!player.visible) return;
+          const data = buildWindowedSeries(player.data, startBound, endBound);
+          if (!data.length) return;
           datasets.push({
             label: player.displayName,
-            data: (player.data || [])
-              .filter((p) => (!startBound || p.date >= startBound) && (!endBound || p.date <= endBound))
-              .map((p) => ({ x: p.date, y: p.rating })),
+            data,
             borderColor: player.color,
             backgroundColor: player.color + '33',
             tension: 0.32,
