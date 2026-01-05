@@ -195,10 +195,18 @@
       background: var(--bg-surface);
       border: 1px solid var(--border);
     }
+    .player-row.disabled {
+      background: #1f1e1d;
+      border-color: #2d2b29;
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
 
     .dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02); }
+    .player-row.disabled .dot { background: var(--border) !important; box-shadow: none; }
     .player-meta { display: flex; flex-direction: column; gap: 2px; }
     .player-name { font-weight: 600; letter-spacing: 0.01em; }
+    .player-row.disabled .player-name { color: var(--text-muted); }
     .player-sub { color: var(--text-muted); font-size: 13px; }
 
     .toggle { position: relative; width: 46px; height: 26px; }
@@ -223,6 +231,15 @@
       border-radius: 50%;
       transition: transform 0.2s ease, background 0.2s ease;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+    .toggle input:disabled + .slider {
+      background: var(--border);
+      border-color: var(--border);
+      cursor: not-allowed;
+    }
+    .toggle input:disabled + .slider::before {
+      background: var(--text-muted);
+      box-shadow: none;
     }
     .toggle input:checked + .slider { background: var(--accent); border-color: var(--accent); }
     .toggle input:checked + .slider::before { transform: translateX(20px); background: var(--bg-main); }
@@ -580,18 +597,31 @@
           return;
         }
 
-        const display = rawName.trim();
-        const color = pickColor(options.preferredColor || existing?.color);
-        const visible = options.visible !== undefined ? options.visible : true;
+      const display = rawName.trim();
+      const color = pickColor(options.preferredColor || existing?.color);
+      const visible = options.visible !== undefined ? options.visible : true;
 
-        try {
-          if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
-          const points = await fetchRatings(username, timeClassEl.value);
-          if (!points.length) {
-            setStatus(display + ' has no ' + timeClassEl.value + ' games recently.', 'warn');
+      try {
+        if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
+        const points = await fetchRatings(username, timeClassEl.value);
+        if (!points.length) {
+            players.set(username, {
+              username,
+              displayName: display,
+              color,
+              data: [],
+              visible: false,
+              disabled: true
+            });
+            renderList();
+            updateChart();
+            persistState();
+            if (!options.silent) {
+              setStatus(display + ' has no ' + timeClassEl.value + ' games recently. Disabled for this time control.', 'warn');
+            }
             return;
           }
-          players.set(username, { username, displayName: display, color, data: points, visible });
+          players.set(username, { username, displayName: display, color, data: points, visible, disabled: false });
           updateDomainWith(points);
           renderList();
           updateChart();
@@ -675,7 +705,7 @@
 
         players.forEach((player) => {
           const row = document.createElement('div');
-          row.className = 'player-row';
+          row.className = 'player-row' + (player.disabled ? ' disabled' : '');
 
           const dot = document.createElement('div');
           dot.className = 'dot';
@@ -689,7 +719,9 @@
           name.textContent = player.displayName;
           const sub = document.createElement('div');
           sub.className = 'player-sub';
-          sub.textContent = (player.data?.length || 0) + ' points - ' + timeClassEl.value;
+          sub.textContent = player.disabled
+            ? 'No ' + timeClassEl.value + ' games (disabled)'
+            : (player.data?.length || 0) + ' points - ' + timeClassEl.value;
           meta.appendChild(name);
           meta.appendChild(sub);
           row.appendChild(meta);
@@ -698,7 +730,8 @@
           toggle.className = 'toggle';
           const input = document.createElement('input');
           input.type = 'checkbox';
-          input.checked = player.visible;
+          input.checked = player.visible && !player.disabled;
+          input.disabled = !!player.disabled;
           input.addEventListener('change', () => {
             player.visible = input.checked;
             updateChart();
@@ -782,7 +815,7 @@
         startBound.setDate(startBound.getDate() - windowDays);
 
         players.forEach((player) => {
-          if (!player.visible) return;
+          if (!player.visible || player.disabled || !player.data?.length) return;
           const data = buildWindowedSeries(player.data, startBound, endBound);
           if (!data.length) return;
           datasets.push({
