@@ -442,6 +442,18 @@
         if (!domain.max || last > domain.max) domain.max = last;
     }
 
+    function summarizePlayer(player) {
+        const data = player?.data || [];
+        if (!data.length) return { rating: null, delta: null, direction: 'flat' };
+        const latest = data[data.length - 1].rating;
+        const prev = data.length > 1 ? data[data.length - 2].rating : null;
+        const delta = prev !== null ? latest - prev : null;
+        let direction = 'flat';
+        if (delta > 0) direction = 'up';
+        else if (delta < 0) direction = 'down';
+        return { rating: latest, delta, direction };
+    }
+
     function renderList() {
         listEl.innerHTML = '';
         if (!players.size) {
@@ -481,9 +493,28 @@
             name.textContent = player.displayName;
             const sub = document.createElement('div');
             sub.className = 'player-sub';
-            sub.textContent = player.disabled
-                ? 'No ' + timeClassEl.value + ' games (disabled)'
-                : (player.data?.length || 0) + ' points - ' + timeClassEl.value;
+            if (player.disabled) {
+                sub.textContent = 'No ' + timeClassEl.value + ' games (disabled)';
+            } else {
+                const { rating, delta, direction } = summarizePlayer(player);
+                const trendSpan = document.createElement('span');
+                trendSpan.className = 'player-trend trend-' + direction;
+                const arrow = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '→';
+                const deltaText = delta === null ? 'new' : delta === 0 ? '0' : (delta > 0 ? '+' : '') + delta;
+                trendSpan.textContent = arrow + ' ' + deltaText;
+
+                const ratingSpan = document.createElement('span');
+                ratingSpan.className = 'player-rating';
+                ratingSpan.textContent = rating != null ? rating + ' ELO' : 'No rating yet';
+
+                const timeClassSpan = document.createElement('span');
+                timeClassSpan.className = 'player-time-class';
+                timeClassSpan.textContent = '· ' + timeClassEl.value;
+
+                sub.appendChild(ratingSpan);
+                sub.appendChild(trendSpan);
+                sub.appendChild(timeClassSpan);
+            }
             meta.appendChild(name);
             meta.appendChild(sub);
             row.appendChild(meta);
