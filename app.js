@@ -22,6 +22,9 @@
     let domain = { min: null, max: null };
     let windowDays = DEFAULT_WINDOW;
     let playersExpanded = true;
+    let colorPickerEl = null;
+    let colorPickerPlayer = null;
+    let colorPickerAnchor = null;
 
     // Range selector variables
     const rangeChartCtx = document.getElementById('range-chart');
@@ -39,6 +42,7 @@
     function init() {
         initChart();
         initRangeChart();
+        setupColorPicker();
         requestAnimationFrame(() => {
             chart?.resize();
             rangeChart?.resize();
@@ -133,6 +137,37 @@
         document.addEventListener('mousedown', handleRangeMouseDown);
         document.addEventListener('mousemove', handleRangeMouseMove);
         document.addEventListener('mouseup', handleRangeMouseUp);
+    }
+
+    function setupColorPicker() {
+        colorPickerEl = document.createElement('div');
+        colorPickerEl.className = 'color-picker hidden';
+
+        palette.forEach((color) => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'color-swatch';
+            btn.style.background = color;
+            btn.dataset.color = color;
+            btn.title = 'Use ' + color;
+            btn.addEventListener('click', (event) => {
+                event.stopPropagation();
+                applyColorSelection(color);
+            });
+            colorPickerEl.appendChild(btn);
+        });
+
+        document.body.appendChild(colorPickerEl);
+        document.addEventListener('click', handleColorPickerDismiss);
+        window.addEventListener('resize', closeColorPicker);
+        window.addEventListener('scroll', closeColorPicker, true);
+    }
+
+    function handleColorPickerDismiss(event) {
+        if (!colorPickerEl || colorPickerEl.classList.contains('hidden')) return;
+        if (colorPickerEl.contains(event.target)) return;
+        if (colorPickerAnchor && colorPickerAnchor.contains(event.target)) return;
+        closeColorPicker();
     }
 
     function setStatus(message, tone = 'info') {
@@ -422,6 +457,21 @@
             const dot = document.createElement('div');
             dot.className = 'dot';
             dot.style.background = player.color;
+            dot.title = 'Change ' + player.displayName + ' color';
+            dot.setAttribute('role', 'button');
+            dot.tabIndex = player.disabled ? -1 : 0;
+            dot.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (player.disabled) return;
+                openColorPicker(player, dot);
+            });
+            dot.addEventListener('keydown', (event) => {
+                if (player.disabled) return;
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openColorPicker(player, dot);
+                }
+            });
             row.appendChild(dot);
 
             const meta = document.createElement('div');
@@ -470,6 +520,39 @@
             listEl.appendChild(row);
         });
         updatePlayerCount();
+    }
+
+    function openColorPicker(player, anchorEl) {
+        if (!colorPickerEl) return;
+        colorPickerPlayer = player;
+        colorPickerAnchor = anchorEl;
+
+        const rect = anchorEl.getBoundingClientRect();
+        colorPickerEl.style.left = rect.left + window.scrollX + 'px';
+        colorPickerEl.style.top = rect.bottom + window.scrollY + 8 + 'px';
+
+        colorPickerEl.querySelectorAll('.color-swatch').forEach((btn) => {
+            const isActive = btn.dataset.color === player.color;
+            btn.classList.toggle('active', isActive);
+        });
+
+        colorPickerEl.classList.remove('hidden');
+    }
+
+    function closeColorPicker() {
+        if (!colorPickerEl) return;
+        colorPickerEl.classList.add('hidden');
+        colorPickerPlayer = null;
+        colorPickerAnchor = null;
+    }
+
+    function applyColorSelection(color) {
+        if (!colorPickerPlayer) return;
+        colorPickerPlayer.color = color;
+        closeColorPicker();
+        renderList();
+        updateChart();
+        persistState();
     }
 
     function updatePlayerCount() {

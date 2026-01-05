@@ -248,11 +248,13 @@ button {
     height: 12px;
     border-radius: 50%;
     box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02);
+    cursor: pointer;
 }
 
 .player-row.disabled .dot {
     background: var(--border) !important;
     box-shadow: none;
+    cursor: not-allowed;
 }
 
 .player-meta {
@@ -520,6 +522,47 @@ canvas {
     display: block;
     width: 100% !important;
     height: 100% !important;
+}
+
+.color-picker {
+    position: absolute;
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+    z-index: 20;
+}
+
+.color-picker.hidden {
+    display: none;
+}
+
+.color-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.color-swatch:focus {
+    outline: none;
+}
+
+.color-swatch:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28);
+}
+
+.color-swatch.active {
+    border-color: var(--text-primary);
+    box-shadow: 0 0 0 2px rgba(230, 225, 220, 0.12);
 }
 
 @media (max-width: 720px) {
