@@ -39,7 +39,10 @@
                             <option value="daily">Daily</option>
                         </select>
                     </div>
-                    <button type="submit" class="primary-btn">Add player</button>
+                    <div class="form-actions">
+                        <button type="submit" class="primary-btn">Add player</button>
+                        <button type="button" class="secondary-btn" id="refresh-btn">Refresh data</button>
+                    </div>
                 </form>
                 <div class="hint">Uses public Chess.com data. Fetches the last few months of games for the selected time
                     control and adds the most recent rating from Chess.com stats.</div>

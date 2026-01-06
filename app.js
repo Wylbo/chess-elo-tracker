@@ -8,6 +8,7 @@
     const formEl = document.getElementById('add-form');
     const usernameEl = document.getElementById('username');
     const timeClassEl = document.getElementById('time-class');
+    const refreshBtn = document.getElementById('refresh-btn');
     const windowValueEl = document.getElementById('window-value');
     const windowButtons = Array.from(document.querySelectorAll('[data-window]'));
     const playersToggleEl = document.getElementById('players-toggle');
@@ -25,6 +26,7 @@
     let colorPickerEl = null;
     let colorPickerPlayer = null;
     let colorPickerAnchor = null;
+    let isRefreshing = false;
 
     // Range selector variables
     const rangeChartCtx = document.getElementById('range-chart');
@@ -68,6 +70,8 @@
             setStatus('Reloading data for ' + timeClassEl.value + '...', 'info');
             refreshAllPlayers();
         });
+
+        refreshBtn.addEventListener('click', handleRefreshClick);
 
         windowButtons.forEach((btn) => btn.addEventListener('click', () => handleWindowSelect(btn)));
         playersToggleEl.addEventListener('click', togglePlayers);
@@ -301,7 +305,7 @@
         }
     }
 
-    async function refreshAllPlayers() {
+    async function refreshAllPlayers(options = {}) {
         const snapshots = Array.from(players.values()).map((p) => ({
             username: p.username,
             displayName: p.displayName,
@@ -310,7 +314,9 @@
         }));
         players.clear();
         domain = { min: null, max: null };
-        windowDays = DEFAULT_WINDOW; // Reset window when changing time class
+        if (options.resetWindow !== false) {
+            windowDays = DEFAULT_WINDOW; // Reset window when changing time class
+        }
         renderList();
         updateChart();
         persistState();
@@ -328,6 +334,29 @@
         }
         computeDomain();
         syncWindowUI();
+    }
+
+    async function handleRefreshClick() {
+        if (isRefreshing) return;
+        if (!players.size) {
+            setStatus('Add players to refresh their data.', 'warn');
+            return;
+        }
+
+        isRefreshing = true;
+        refreshBtn.disabled = true;
+        const originalText = refreshBtn.textContent;
+        refreshBtn.textContent = 'Refreshing...';
+        setStatus('Refreshing tracked players...', 'info');
+
+        try {
+            await refreshAllPlayers({ resetWindow: false });
+            setStatus('Player data refreshed.', 'success');
+        } finally {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = originalText;
+            isRefreshing = false;
+        }
     }
 
     async function addPlayer(rawName, options = {}) {
