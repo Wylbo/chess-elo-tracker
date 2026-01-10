@@ -286,7 +286,7 @@
 
         if (typeof saved?.playersExpanded === 'boolean') {
             playersExpanded = saved.playersExpanded;
-            applyPlayersCollapse();
+            applyPlayersCollapse({ animate: false });
         }
 
         if (saved?.players?.length) {
@@ -301,7 +301,7 @@
             }
             setStatus('Restored saved players.', 'success');
         } else {
-            applyPlayersCollapse();
+            applyPlayersCollapse({ animate: false });
         }
     }
 
@@ -625,10 +625,60 @@
         persistState();
     }
 
-    function applyPlayersCollapse() {
-        playersBodyEl.classList.toggle('collapsed', !playersExpanded);
-        playersToggleEl.setAttribute('aria-expanded', playersExpanded);
-        playersToggleEl.querySelector('.chevron').textContent = playersExpanded ? 'v' : '>';
+    function applyPlayersCollapse(options = {}) {
+        const { animate = true } = options;
+        const isExpanded = playersExpanded;
+
+        playersToggleEl.setAttribute('aria-expanded', isExpanded);
+        playersToggleEl.querySelector('.chevron').textContent = isExpanded ? 'v' : '>';
+
+        if (playersBodyEl._collapseHandler) {
+            playersBodyEl.removeEventListener('transitionend', playersBodyEl._collapseHandler);
+            playersBodyEl._collapseHandler = null;
+        }
+
+        if (!animate) {
+            playersBodyEl.style.transition = 'none';
+            playersBodyEl.classList.toggle('collapsed', !isExpanded);
+            playersBodyEl.style.height = isExpanded ? 'auto' : '0px';
+            playersBodyEl.style.opacity = isExpanded ? '1' : '0';
+            playersBodyEl.offsetHeight;
+            playersBodyEl.style.transition = '';
+            return;
+        }
+
+        const startHeight = playersBodyEl.getBoundingClientRect().height;
+        const endHeight = isExpanded ? playersBodyEl.scrollHeight : 0;
+
+        if (isExpanded) {
+            playersBodyEl.classList.remove('collapsed');
+        }
+
+        playersBodyEl.style.height = startHeight + 'px';
+        playersBodyEl.style.opacity = isExpanded ? '0' : '1';
+        playersBodyEl.offsetHeight;
+
+        const onEnd = (event) => {
+            if (event.propertyName !== 'height') return;
+            playersBodyEl.removeEventListener('transitionend', onEnd);
+            playersBodyEl._collapseHandler = null;
+            if (isExpanded) {
+                playersBodyEl.style.height = 'auto';
+                playersBodyEl.style.opacity = '1';
+            } else {
+                playersBodyEl.classList.add('collapsed');
+                playersBodyEl.style.height = '0px';
+                playersBodyEl.style.opacity = '0';
+            }
+        };
+
+        playersBodyEl._collapseHandler = onEnd;
+        playersBodyEl.addEventListener('transitionend', onEnd);
+
+        requestAnimationFrame(() => {
+            playersBodyEl.style.height = endHeight + 'px';
+            playersBodyEl.style.opacity = isExpanded ? '1' : '0';
+        });
     }
 
     function buildWindowedSeries(points, startBound, endBound) {
