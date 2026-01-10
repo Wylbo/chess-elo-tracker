@@ -8,6 +8,7 @@
     const formEl = document.getElementById('add-form');
     const usernameEl = document.getElementById('username');
     const timeClassEl = document.getElementById('time-class');
+    const refreshBtn = document.getElementById('refresh-btn');
     const windowValueEl = document.getElementById('window-value');
     const windowButtons = Array.from(document.querySelectorAll('[data-window]'));
     const playersToggleEl = document.getElementById('players-toggle');
@@ -25,6 +26,7 @@
     let colorPickerEl = null;
     let colorPickerPlayer = null;
     let colorPickerAnchor = null;
+    let isRefreshing = false;
 
     // Range selector variables
     const rangeChartCtx = document.getElementById('range-chart');
@@ -68,6 +70,8 @@
             setStatus('Reloading data for ' + timeClassEl.value + '...', 'info');
             refreshAllPlayers();
         });
+
+        refreshBtn.addEventListener('click', handleRefreshClick);
 
         windowButtons.forEach((btn) => btn.addEventListener('click', () => handleWindowSelect(btn)));
         playersToggleEl.addEventListener('click', togglePlayers);
@@ -301,7 +305,7 @@
         }
     }
 
-    async function refreshAllPlayers() {
+    async function refreshAllPlayers(options = {}) {
         const snapshots = Array.from(players.values()).map((p) => ({
             username: p.username,
             displayName: p.displayName,
@@ -310,7 +314,9 @@
         }));
         players.clear();
         domain = { min: null, max: null };
-        windowDays = DEFAULT_WINDOW; // Reset window when changing time class
+        if (options.resetWindow !== false) {
+            windowDays = DEFAULT_WINDOW; // Reset window when changing time class
+        }
         renderList();
         updateChart();
         persistState();
@@ -328,6 +334,29 @@
         }
         computeDomain();
         syncWindowUI();
+    }
+
+    async function handleRefreshClick() {
+        if (isRefreshing) return;
+        if (!players.size) {
+            setStatus('Add players to refresh their data.', 'warn');
+            return;
+        }
+
+        isRefreshing = true;
+        refreshBtn.disabled = true;
+        const originalText = refreshBtn.textContent;
+        refreshBtn.textContent = 'Refreshing...';
+        setStatus('Refreshing tracked players...', 'info');
+
+        try {
+            await refreshAllPlayers({ resetWindow: false });
+            setStatus('Player data refreshed.', 'success');
+        } finally {
+            refreshBtn.disabled = false;
+            refreshBtn.textContent = originalText;
+            isRefreshing = false;
+        }
     }
 
     async function addPlayer(rawName, options = {}) {
@@ -442,6 +471,18 @@
         if (!domain.max || last > domain.max) domain.max = last;
     }
 
+    function summarizePlayer(player) {
+        const data = player?.data || [];
+        if (!data.length) return { rating: null, delta: null, direction: 'flat' };
+        const latest = data[data.length - 1].rating;
+        const prev = data.length > 1 ? data[data.length - 2].rating : null;
+        const delta = prev !== null ? latest - prev : null;
+        let direction = 'flat';
+        if (delta > 0) direction = 'up';
+        else if (delta < 0) direction = 'down';
+        return { rating: latest, delta, direction };
+    }
+
     function renderList() {
         listEl.innerHTML = '';
         if (!players.size) {
@@ -481,9 +522,28 @@
             name.textContent = player.displayName;
             const sub = document.createElement('div');
             sub.className = 'player-sub';
-            sub.textContent = player.disabled
-                ? 'No ' + timeClassEl.value + ' games (disabled)'
-                : (player.data?.length || 0) + ' points - ' + timeClassEl.value;
+            if (player.disabled) {
+                sub.textContent = 'No ' + timeClassEl.value + ' games (disabled)';
+            } else {
+                const { rating, delta, direction } = summarizePlayer(player);
+                const trendSpan = document.createElement('span');
+                trendSpan.className = 'player-trend trend-' + direction;
+                const arrow = direction === 'up' ? '↑' : direction === 'down' ? '↓' : '→';
+                const deltaText = delta === null ? 'new' : delta === 0 ? '0' : (delta > 0 ? '+' : '') + delta;
+                trendSpan.textContent = arrow + ' ' + deltaText;
+
+                const ratingSpan = document.createElement('span');
+                ratingSpan.className = 'player-rating';
+                ratingSpan.textContent = rating != null ? rating + ' ELO' : 'No rating yet';
+
+                const timeClassSpan = document.createElement('span');
+                timeClassSpan.className = 'player-time-class';
+                timeClassSpan.textContent = '· ' + timeClassEl.value;
+
+                sub.appendChild(ratingSpan);
+                sub.appendChild(trendSpan);
+                sub.appendChild(timeClassSpan);
+            }
             meta.appendChild(name);
             meta.appendChild(sub);
             row.appendChild(meta);
