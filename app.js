@@ -94,7 +94,7 @@
                     }
                 },
                 plugins: {
-                    legend: { display: false },
+                    legend: { display: true },
                     tooltip: {
                         backgroundColor: '#2B2A28',
                         borderColor: 'rgba(53,50,47,0.7)',
