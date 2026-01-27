@@ -407,7 +407,7 @@
             renderList();
             updateChart();
             persistState();
-            if (!options.silent) setStatus('Added ' + display + ' (' + points.length + ' points).', 'success');
+            if (!options.silent) setStatus('Added ' + display, 'success');
         } catch (err) {
             console.error(err);
             resolvePendingPlayer(username);
