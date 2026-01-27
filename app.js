@@ -19,6 +19,7 @@
     const DEFAULT_WINDOW = 180;
     const MIN_WINDOW = 7;
     const MAX_WINDOW = 1095;
+    const CUSTOM_WINDOW = 'custom';
     let chart = null;
     let colorIndex = 0;
     let domain = { min: null, max: null };
@@ -222,7 +223,9 @@
             }
 
             // Update active state
-            if (windowDays === null) {
+            if (windowDays === CUSTOM_WINDOW) {
+                btn.classList.remove('active');
+            } else if (windowDays === null) {
                 btn.classList.toggle('active', btn.dataset.window === 'max');
             } else {
                 const val = parseInt(btn.dataset.window, 10);
@@ -232,6 +235,7 @@
     }
 
     function formatWindowLabel(days) {
+        if (days === CUSTOM_WINDOW) return 'custom range';
         if (days === null) return 'all time';
         const map = {
             7: '1 week',
@@ -767,10 +771,14 @@
             return;
         }
         const datasets = [];
-        const endBound = domain.max;
+        const endBound = new Date(domain.max);
         let startBound;
 
-        if (windowDays === null) {
+        if (windowDays === CUSTOM_WINDOW) {
+            const totalTimeSpan = domain.max.getTime() - domain.min.getTime();
+            startBound = new Date(domain.min.getTime() + (totalTimeSpan * rangeSelectorStart / 100));
+            endBound.setTime(domain.min.getTime() + (totalTimeSpan * rangeSelectorEnd / 100));
+        } else if (windowDays === null) {
             // Show all data
             startBound = domain.min;
         } else {
@@ -944,6 +952,7 @@
 
     function applyRangeSelection() {
         if (!domain.min || !domain.max) return;
+        windowDays = CUSTOM_WINDOW;
 
         const timeSpan = domain.max.getTime() - domain.min.getTime();
         const selectedStart = new Date(domain.min.getTime() + (timeSpan * rangeSelectorStart / 100));
