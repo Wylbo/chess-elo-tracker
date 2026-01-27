@@ -279,6 +279,13 @@ button {
     border: 1px solid var(--border);
 }
 
+.player-row.placeholder {
+    min-height: 58px;
+    border-style: dashed;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
 .player-row.disabled {
     background: #1f1e1d;
     border-color: #2d2b29;

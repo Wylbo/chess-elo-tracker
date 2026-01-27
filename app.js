@@ -3,6 +3,7 @@
     const palette = ['#D19A66', '#C5865B', '#98C379', '#E5C07B', '#E06C75', '#B8B2A7', '#8C8577', '#E6E1DC'];
     const storageKey = 'elo-tracker:v1';
     const players = new Map();
+    const pendingPlayers = new Set();
     const listEl = document.getElementById('player-list');
     const statusEl = document.getElementById('status');
     const formEl = document.getElementById('add-form');
@@ -291,6 +292,7 @@
 
         if (saved?.players?.length) {
             setStatus('Restoring ' + saved.players.length + ' saved players...', 'info');
+            resetPendingPlayers(saved.players.map((entry) => entry.username));
             for (const entry of saved.players) {
                 await addPlayer(entry.username, {
                     silent: true,
@@ -317,7 +319,7 @@
         if (options.resetWindow !== false) {
             windowDays = DEFAULT_WINDOW; // Reset window when changing time class
         }
-        renderList();
+        resetPendingPlayers(snapshots.map((entry) => entry.username));
         updateChart();
         persistState();
 
@@ -377,6 +379,7 @@
         const color = pickColor(options.preferredColor || existing?.color);
         const visible = options.visible !== undefined ? options.visible : true;
 
+        queuePendingPlayer(username);
         try {
             if (!options.silent) setStatus('Fetching ' + display + ' ' + timeClassEl.value + ' games...', 'info');
             const points = await fetchRatings(username, timeClassEl.value);
@@ -389,6 +392,7 @@
                     visible: false,
                     disabled: true
                 });
+                resolvePendingPlayer(username);
                 renderList();
                 updateChart();
                 persistState();
@@ -399,12 +403,15 @@
             }
             players.set(username, { username, displayName: display, color, data: points, visible, disabled: false });
             updateDomainWith(points);
+            resolvePendingPlayer(username);
             renderList();
             updateChart();
             persistState();
             if (!options.silent) setStatus('Added ' + display + ' (' + points.length + ' points).', 'success');
         } catch (err) {
             console.error(err);
+            resolvePendingPlayer(username);
+            renderList();
             setStatus(err.message || 'Unable to fetch data for ' + display + '.', 'error');
         }
     }
@@ -485,7 +492,7 @@
 
     function renderList() {
         listEl.innerHTML = '';
-        if (!players.size) {
+        if (!players.size && !pendingPlayers.size) {
             listEl.innerHTML = '<div class="player-sub">No players yet. Add a Chess.com username to start tracking.</div>';
             updatePlayerCount();
             return;
@@ -579,6 +586,13 @@
 
             listEl.appendChild(row);
         });
+
+        pendingPlayers.forEach(() => {
+            const row = document.createElement('div');
+            row.className = 'player-row placeholder';
+            row.setAttribute('aria-hidden', 'true');
+            listEl.appendChild(row);
+        });
         updatePlayerCount();
     }
 
@@ -616,7 +630,26 @@
     }
 
     function updatePlayerCount() {
-        playerCountEl.textContent = players.size;
+        playerCountEl.textContent = players.size + pendingPlayers.size;
+    }
+
+    function queuePendingPlayer(username) {
+        if (!username || pendingPlayers.has(username)) return;
+        pendingPlayers.add(username);
+        renderList();
+    }
+
+    function resolvePendingPlayer(username) {
+        if (!username) return;
+        pendingPlayers.delete(username);
+    }
+
+    function resetPendingPlayers(usernames = []) {
+        pendingPlayers.clear();
+        usernames.forEach((username) => {
+            if (username) pendingPlayers.add(username.toLowerCase());
+        });
+        renderList();
     }
 
     function togglePlayers() {
