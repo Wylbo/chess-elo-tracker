@@ -12,6 +12,13 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+    <!-- Chessboard libraries for game replay -->
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
+    <!-- Stockfish.js for game analysis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js"></script>
 </head>
 
 <body>
@@ -84,6 +91,72 @@
                         <div id="range-overlay" class="range-overlay"></div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Weekly Best/Worst Games Section -->
+        <div class="weekly-games-section panel">
+            <div class="collapsible">
+                <button class="collapsible-trigger" type="button" id="weekly-toggle" aria-expanded="true">
+                    <span>Weekly Best/Worst Games</span>
+                    <span class="chevron" aria-hidden="true">v</span>
+                </button>
+                <div class="collapsible-body" id="weekly-body">
+                    <div class="collapsible-inner">
+                        <div id="weekly-status" class="status" data-tone="info">
+                            Add players to see their best and worst games from the last 7 days.
+                        </div>
+                        <div class="analysis-progress hidden" id="analysis-progress">
+                            <div class="analysis-progress-bar" id="analysis-progress-bar"></div>
+                        </div>
+                        <table class="weekly-table" id="weekly-table">
+                            <thead>
+                                <tr>
+                                    <th>Player</th>
+                                    <th>Best Game</th>
+                                    <th>Worst Game</th>
+                                </tr>
+                            </thead>
+                            <tbody id="weekly-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Replay Modal -->
+    <div class="modal-overlay hidden" id="game-modal-overlay">
+        <div class="modal game-modal" id="game-modal">
+            <div class="modal-header">
+                <h3 id="modal-title">Game Replay</h3>
+                <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="game-info" id="game-info">
+                    <span class="game-players" id="modal-players"></span>
+                    <span class="game-result" id="modal-result"></span>
+                    <span class="game-accuracy" id="modal-accuracy"></span>
+                </div>
+                <div class="board-container">
+                    <div id="chess-board"></div>
+                </div>
+                <div class="playback-controls">
+                    <button class="control-btn" id="btn-start" title="Start">&#8676;</button>
+                    <button class="control-btn" id="btn-prev" title="Previous">&larr;</button>
+                    <button class="control-btn" id="btn-play" title="Play/Pause">&#9658;</button>
+                    <button class="control-btn" id="btn-next" title="Next">&rarr;</button>
+                    <button class="control-btn" id="btn-end" title="End">&#8677;</button>
+                </div>
+                <div class="move-display">
+                    <span id="move-counter">Move 0 / 0</span>
+                </div>
+                <div class="move-list" id="move-list"></div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" target="_blank" rel="noopener" id="view-on-chesscom" class="secondary-btn">
+                    View on Chess.com
+                </a>
             </div>
         </div>
     </div>
