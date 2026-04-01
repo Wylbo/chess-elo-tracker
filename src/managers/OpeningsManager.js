@@ -42,8 +42,9 @@ export class OpeningsManager {
             );
 
             if (!games.length) {
-                this.eventBus.emit(Events.OPENINGS_ERROR, {
-                    message: `No ${timeClass} games found for ${username} in this time window.`
+                this.eventBus.emit(Events.OPENINGS_STATS_READY, {
+                    username,
+                    openings: { white: [], black: [] }
                 });
                 return;
             }
