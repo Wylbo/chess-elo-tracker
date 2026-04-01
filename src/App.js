@@ -21,6 +21,10 @@ import { PlayerListController } from './controllers/PlayerListController.js';
 import { CollapsibleController } from './controllers/CollapsibleController.js';
 import { WeeklyGamesController } from './controllers/WeeklyGamesController.js';
 import { GameModalController } from './controllers/GameModalController.js';
+import { OpeningsService } from './services/OpeningsService.js';
+import { OpeningsManager } from './managers/OpeningsManager.js';
+import { TabController } from './controllers/TabController.js';
+import { OpeningsController } from './controllers/OpeningsController.js';
 
 /**
  * App - Main application orchestrator
@@ -42,6 +46,8 @@ export class App {
         this.chartManager = null;
         this.rangeChartManager = null;
         this.weeklyGamesManager = null;
+        this.openingsService = new OpeningsService();
+        this.openingsManager = null;
 
         // Controllers
         this.statusController = null;
@@ -53,6 +59,8 @@ export class App {
         this.weeklySectionController = null;
         this.weeklyGamesController = null;
         this.gameModalController = null;
+        this.tabController = null;
+        this.openingsController = null;
 
         // DOM references
         this.formEl = null;
@@ -140,6 +148,10 @@ export class App {
             this.apiService,
             this.stockfishService
         );
+
+        // Openings manager
+        this.openingsManager = new OpeningsManager(this.eventBus, this.openingsService);
+        this.openingsManager.initialize();
     }
 
     /**
@@ -147,6 +159,12 @@ export class App {
      * @private
      */
     initializeControllers() {
+        // Tab controller
+        const tabButtons = document.querySelectorAll('[data-tab]');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        this.tabController = new TabController(tabButtons, tabPanels);
+        this.tabController.initialize('weekly');
+
         // Status controller
         const statusEl = document.getElementById(DOMIds.STATUS);
         this.statusController = new StatusController(this.eventBus, statusEl);
@@ -192,6 +210,7 @@ export class App {
             onRemovePlayer: (username) => {
                 this.playerManager.removePlayer(username);
                 this.weeklyGamesManager.clearPlayerCache(username);
+                this.openingsService.clearUserCache(username);
                 this.renderPlayerList();
                 this.updateChart();
                 this.persistState();
@@ -238,6 +257,25 @@ export class App {
             const player = this.playerManager.getPlayer(username);
             return player?.displayName || username;
         });
+
+        // Openings controller
+        this.openingsController = new OpeningsController(
+            this.eventBus,
+            {
+                statusEl: document.getElementById(DOMIds.OPENINGS_STATUS),
+                playerSelect: document.getElementById(DOMIds.OPENINGS_PLAYER_SELECT),
+                allTimeNote: document.getElementById(DOMIds.OPENINGS_ALL_TIME_NOTE),
+                windowBtns: document.querySelectorAll('.openings-window-btn'),
+                whiteTableBody: document.getElementById(DOMIds.OPENINGS_TBODY_WHITE),
+                blackTableBody: document.getElementById(DOMIds.OPENINGS_TBODY_BLACK),
+                whiteTableHead: document.querySelector('#openings-table-white thead'),
+                blackTableHead: document.querySelector('#openings-table-black thead'),
+                chartCanvas: document.getElementById(DOMIds.OPENINGS_CHART)
+            },
+            () => this.playerManager.getAllPlayers(),
+            () => this.timeClassEl?.value || 'blitz'
+        );
+        this.openingsController.initialize();
     }
 
     /**
@@ -266,6 +304,7 @@ export class App {
         this.timeClassEl?.addEventListener('change', () => {
             this.setStatus(`Reloading data for ${this.timeClassEl.value}...`, 'info');
             this.refreshAllPlayers();
+            this.openingsController?.refreshPlayerDropdown();
         });
 
         this.refreshBtn?.addEventListener('click', () => this.handleRefreshClick());
@@ -548,8 +587,10 @@ export class App {
             }
 
             this.setStatus('Restored saved players.', 'success');
+            this.openingsController?.refreshPlayerDropdown();
         } else {
             this.playersSectionController?.setExpanded(true, { animate: false });
+            this.openingsController?.refreshPlayerDropdown();
         }
     }
 }
