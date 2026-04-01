@@ -1,6 +1,17 @@
 import { AppConfig } from '../config/AppConfig.js';
 
 /**
+ * @typedef {Object} ParsedGame
+ * @property {string} eco - ECO code (e.g. 'B90')
+ * @property {string} name - Opening name (e.g. 'Sicilian Defense: Najdorf Variation')
+ * @property {'white'|'black'} color - Player's color in this game
+ * @property {'win'|'draw'|'loss'} result - Outcome for the tracked player
+ * @property {string} timeClass - 'blitz'|'bullet'|'rapid'|'daily'
+ * @property {number} opponentRating - Opponent's rating (0 if unknown)
+ * @property {number} endTime - Unix timestamp in ms
+ */
+
+/**
  * OpeningsService - Chess.com archive fetching, PGN parsing, and localStorage caching.
  * Each past month is cached indefinitely; the current month is always re-fetched.
  */
@@ -35,6 +46,9 @@ export class OpeningsService {
         if (!response.ok) {
             if (response.status === 404) {
                 throw new Error(`Player "${username}" not found on Chess.com.`);
+            }
+            if (response.status === 429) {
+                throw new Error('Chess.com rate limit reached. Please wait a moment and try again.');
             }
             throw new Error(`Chess.com returned ${response.status} for ${username}.`);
         }
@@ -94,6 +108,8 @@ export class OpeningsService {
     async fetchGamesForPeriod(username, timeClass, timeWindowDays) {
         const archives = await this.fetchArchives(username);
 
+        // Use 28-day divisor (shortest month) to ensure we never under-fetch;
+        // the cutoff filter below enforces the actual time window precisely.
         const monthsNeeded = timeWindowDays === 0
             ? this.maxMonths
             : Math.min(Math.ceil(timeWindowDays / 28) + 1, this.maxMonths);
