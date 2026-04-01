@@ -175,7 +175,7 @@ export class App {
 
         // Window controller
         const windowValueEl = document.getElementById(DOMIds.WINDOW_VALUE);
-        const windowButtons = document.querySelectorAll('[data-window]');
+        const windowButtons = document.querySelectorAll('.range-buttons [data-window]');
         this.windowController = new WindowController(this.eventBus, windowValueEl);
         this.windowController.initialize(windowButtons);
 

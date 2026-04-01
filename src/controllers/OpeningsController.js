@@ -180,6 +180,7 @@ export class OpeningsController {
 
     /** @private */
     _handleStatsReady({ username, openings }) {
+        if (username !== this._lastRequestedUsername) return;  // discard stale response
         this.currentStats = openings;
         const isEmpty = !openings.white.length && !openings.black.length;
         if (isEmpty) {
@@ -266,19 +267,21 @@ export class OpeningsController {
     /** @private */
     _buildRow(s) {
         const tr = document.createElement('tr');
-        const wr = (s.winRate * 100).toFixed(1);
-        const dr = (s.drawRate * 100).toFixed(1);
-        const lr = (s.lossRate * 100).toFixed(1);
-        const nameDisplay = s.name.length > 40 ? s.name.slice(0, 40) + '…' : s.name;
         tr.innerHTML = `
-            <td class="cell-name" title="${s.name}">${nameDisplay}</td>
-            <td class="cell-eco">${s.eco}</td>
-            <td>${s.games}</td>
-            <td class="cell-win">${wr}%</td>
-            <td class="cell-draw">${dr}%</td>
-            <td class="cell-loss">${lr}%</td>
-            <td>${typeof s.perfRating === 'number' ? Math.round(s.perfRating) : '—'}</td>
+            <td class="cell-name"></td>
+            <td class="cell-eco"></td>
+            <td class="cell-games">${s.games}</td>
+            <td class="cell-win">${(s.winRate * 100).toFixed(1)}%</td>
+            <td class="cell-draw">${(s.drawRate * 100).toFixed(1)}%</td>
+            <td class="cell-loss">${(s.lossRate * 100).toFixed(1)}%</td>
+            <td class="cell-perf">${typeof s.perfRating === 'number' ? Math.round(s.perfRating) : '—'}</td>
         `;
+        // Safely inject untrusted name/eco using DOM methods
+        const nameDisplay = s.name.length > 40 ? s.name.slice(0, 40) + '…' : s.name;
+        const nameTd = tr.querySelector('.cell-name');
+        nameTd.textContent = nameDisplay;
+        nameTd.setAttribute('title', s.name);
+        tr.querySelector('.cell-eco').textContent = s.eco;
         return tr;
     }
 
