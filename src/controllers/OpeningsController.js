@@ -31,6 +31,9 @@ export class OpeningsController {
         this.chart = null;
         this.currentStats = null;
 
+        this._initialized = false;
+        this._lastRequestedUsername = null;
+
         // Sort state per color: { col: string, dir: 'asc'|'desc' }
         this.sortState = {
             white: { col: 'games', dir: 'desc' },
@@ -43,6 +46,8 @@ export class OpeningsController {
      * @returns {OpeningsController} this
      */
     initialize() {
+        if (this._initialized) return this;
+        this._initialized = true;
         this._bindWindowBtns();
         this._bindPlayerSelect();
         this._bindSortHeaders();
@@ -146,6 +151,7 @@ export class OpeningsController {
         const isAllTime = this.selectedWindow === 0;
         this.allTimeNote.classList.toggle('hidden', !isAllTime);
 
+        this._lastRequestedUsername = username;
         this.eventBus.emit(Events.OPENINGS_FETCH_REQUESTED, {
             username,
             timeWindowDays: this.selectedWindow,
@@ -184,7 +190,9 @@ export class OpeningsController {
         this._renderTable('white', openings.white);
         this._renderTable('black', openings.black);
         this._renderChart(openings);
-        if (username) this.playerSelect.value = username;
+        if (username && username === this._lastRequestedUsername) {
+            this.playerSelect.value = username;
+        }
     }
 
     /**
@@ -217,8 +225,9 @@ export class OpeningsController {
         tbody.innerHTML = '';
 
         if (!main.length && !otherStats.length) {
+            const colCount = this[`${color}TableHead`]?.querySelectorAll('th').length ?? 7;
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td colspan="7" class="cell-other">No games found.</td>`;
+            tr.innerHTML = `<td colspan="${colCount}" class="cell-other">No games found.</td>`;
             tbody.appendChild(tr);
             return;
         }
@@ -317,17 +326,17 @@ export class OpeningsController {
                     {
                         label: 'Wins',
                         data: top10.map(o => o.wins),
-                        backgroundColor: '#98C379'
+                        backgroundColor: AppConfig.PALETTE[2]
                     },
                     {
                         label: 'Draws',
                         data: top10.map(o => o.draws),
-                        backgroundColor: '#B8B2A7'
+                        backgroundColor: AppConfig.PALETTE[5]
                     },
                     {
                         label: 'Losses',
                         data: top10.map(o => o.losses),
-                        backgroundColor: '#E06C75'
+                        backgroundColor: AppConfig.PALETTE[4]
                     }
                 ]
             },
@@ -337,7 +346,7 @@ export class OpeningsController {
                 plugins: {
                     legend: {
                         labels: {
-                            color: '#B8B2A7',
+                            color: AppConfig.CHART.TICK_COLOR,
                             font: { family: 'Space Grotesk, Segoe UI, sans-serif' }
                         }
                     }
@@ -345,13 +354,13 @@ export class OpeningsController {
                 scales: {
                     x: {
                         stacked: true,
-                        ticks: { color: '#B8B2A7' },
-                        grid: { color: 'rgba(230,225,220,0.08)' }
+                        ticks: { color: AppConfig.CHART.TICK_COLOR },
+                        grid: { color: AppConfig.CHART.GRID_COLOR }
                     },
                     y: {
                         stacked: true,
-                        ticks: { color: '#B8B2A7', font: { size: 11 } },
-                        grid: { color: 'rgba(230,225,220,0.08)' }
+                        ticks: { color: AppConfig.CHART.TICK_COLOR, font: { size: 11 } },
+                        grid: { color: AppConfig.CHART.GRID_COLOR }
                     }
                 }
             }
