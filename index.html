@@ -17,8 +17,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.12.0/chess.min.js"></script>
-    <!-- Stockfish.js for game analysis -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js"></script>
+    <!-- Stockfish.js loaded as Web Worker in StockfishService -->
 </head>
 
 <body>
@@ -115,6 +114,7 @@
                                     <th>Player</th>
                                     <th>Best Game</th>
                                     <th>Worst Game</th>
+                                    <th>Random Game</th>
                                 </tr>
                             </thead>
                             <tbody id="weekly-table-body"></tbody>
@@ -161,7 +161,7 @@
         </div>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module" src="src/App.js"></script>
 </body>
 
 </html>

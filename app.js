@@ -1036,7 +1036,7 @@
             // Use the stockfish.js from CDN as a Web Worker
             stockfishWorker = new Worker('https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js');
 
-            stockfishWorker.onmessage = function(event) {
+            stockfishWorker.onmessage = function (event) {
                 const line = event.data;
 
                 if (line === 'uciok') {
@@ -1074,7 +1074,7 @@
                 }
             };
 
-            stockfishWorker.onerror = function(err) {
+            stockfishWorker.onerror = function (err) {
                 console.error('Stockfish worker error:', err);
                 stockfishReady = false;
             };
@@ -1347,6 +1347,8 @@
         if (!stockfishReady) {
             console.log('Stockfish not ready yet, waiting...');
             setTimeout(() => processAnalysisQueue(), 1000);
+            // Ensure UI shows the queued/waiting state while we wait for Stockfish
+            renderWeeklyTable();
             return;
         }
 
@@ -1384,6 +1386,8 @@
         }
 
         isAnalyzing = false;
+        // Ensure UI reflects final queue/progress state after processing
+        renderWeeklyTable();
     }
 
     async function analyzeGameWithStockfish(game) {
@@ -1558,7 +1562,12 @@
             weeklyStatusEl.setAttribute('data-tone', 'warn');
             analysisProgressEl?.classList.add('hidden');
         } else if (analysisQueue.length > 0 || isAnalyzing) {
-            const remaining = analysisQueue.length + (isAnalyzing ? 1 : 0);
+            let remaining;
+            if (totalGamesToAnalyze > 0) {
+                remaining = Math.max(0, totalGamesToAnalyze - gamesAnalyzed);
+            } else {
+                remaining = analysisQueue.length + (isAnalyzing ? 1 : 0);
+            }
             weeklyStatusEl.textContent = 'Analyzing games with Stockfish... (' + remaining + ' remaining)';
             weeklyStatusEl.setAttribute('data-tone', 'info');
 
@@ -1705,7 +1714,7 @@
         chessBoard = Chessboard(boardEl, {
             position: 'start',
             orientation: userColor,
-            pieceTheme: function(piece) {
+            pieceTheme: function (piece) {
                 // Use Chess.com pieces CDN (piece format: wK, bQ, etc -> wk.png, bq.png)
                 return 'https://images.chesscomfiles.com/chess-themes/pieces/neo/150/' + piece.toLowerCase() + '.png';
             }
@@ -1804,14 +1813,14 @@
 
     // Hook into existing player updates
     const originalAddPlayer = addPlayer;
-    addPlayer = async function(rawName, options = {}) {
+    addPlayer = async function (rawName, options = {}) {
         await originalAddPlayer.call(this, rawName, options);
         // Update weekly games after player is added
         setTimeout(() => updateWeeklyGames(), 100);
     };
 
     const originalRefreshAllPlayers = refreshAllPlayers;
-    refreshAllPlayers = async function(options = {}) {
+    refreshAllPlayers = async function (options = {}) {
         await originalRefreshAllPlayers.call(this, options);
         // Clear games cache and update
         gamesStore.clear();
@@ -1820,7 +1829,7 @@
 
     // Handle player removal - update weekly table
     const originalRenderList = renderList;
-    renderList = function() {
+    renderList = function () {
         originalRenderList.call(this);
         // Clean up games for removed players
         for (const username of gamesStore.keys()) {

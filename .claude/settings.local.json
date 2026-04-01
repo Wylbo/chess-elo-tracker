@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --check:*)",
+      "Bash(curl:*)",
+      "Read(//tmp/gitnexus/**)",
+      "Bash(claude mcp:*)",
+      "Bash(where claude:*)",
+      "Bash(cmd.exe /c \"where claude\")",
+      "Bash(cmd.exe /c \"claude mcp add gitnexus -- npx -y gitnexus@latest mcp\")",
+      "WebFetch(domain:github.com)",
+      "Bash(gh repo:*)",
+      "Bash(taskkill:*)",
+      "Bash(python -m http.server 8080)"
+    ],
+    "additionalDirectories": [
+      "d:\\Repo\\chess-elo-tracker\\src"
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true
+  }
+}

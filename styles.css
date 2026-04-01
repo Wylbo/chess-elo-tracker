@@ -713,6 +713,7 @@ canvas {
     width: 100%;
     border-collapse: collapse;
     margin-top: 12px;
+    table-layout: fixed;
 }
 
 .weekly-table th,
@@ -720,6 +721,11 @@ canvas {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid var(--border);
+}
+
+.weekly-table th:first-child,
+.weekly-table td:first-child {
+    width: 160px;
 }
 
 .weekly-table th {
@@ -761,6 +767,10 @@ canvas {
 
 .game-cell.worst {
     border-left: 3px solid var(--error);
+}
+
+.game-cell.random {
+    border-left: 3px solid var(--accent);
 }
 
 .game-cell-content {
