@@ -103,5 +103,5 @@ export const Events = {
     // Openings events
     OPENINGS_FETCH_REQUESTED: 'openings:fetchRequested',
     OPENINGS_STATS_READY: 'openings:statsReady',
-    OPENINGS_ERROR: 'openings:error'
+    OPENINGS_ERROR: 'openings:error',
 };

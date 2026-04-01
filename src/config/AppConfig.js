@@ -68,12 +68,12 @@ export const AppConfig = {
 
     // Openings feature
     OPENINGS_MAX_MONTHS: 24,
-    OPENINGS_CACHE_PREFIX: 'openings:',
+    OPENINGS_CACHE_PREFIX: 'elo-tracker:openings:',
     OPENINGS_TIME_WINDOWS: [
-        { days: 30,  label: '30d' },
-        { days: 90,  label: '90d' },
+        { days: 30, label: '30d' },
+        { days: 90, label: '90d' },
         { days: 365, label: '365d' },
-        { days: 0,   label: 'All time' }  // 0 = all time, capped at OPENINGS_MAX_MONTHS
+        { days: 0, label: 'All time' }  // 0 = all time, capped at OPENINGS_MAX_MONTHS
     ],
     OPENINGS_DEFAULT_WINDOW: 90,
     OPENINGS_MIN_GAMES: 3

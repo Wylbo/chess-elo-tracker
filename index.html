@@ -93,31 +93,107 @@
             </div>
         </div>
 
-        <!-- Weekly Best/Worst Games Section -->
-        <div class="weekly-games-section panel">
-            <div class="collapsible">
-                <button class="collapsible-trigger" type="button" id="weekly-toggle" aria-expanded="true">
-                    <span>Weekly Best/Worst Games</span>
-                    <span class="chevron" aria-hidden="true">v</span>
-                </button>
-                <div class="collapsible-body" id="weekly-body">
-                    <div class="collapsible-inner">
-                        <div id="weekly-status" class="status" data-tone="info">
-                            Add players to see their best and worst games from the last 7 days.
+        <!-- Tabbed bottom panel: Weekly Games + Openings -->
+        <div class="bottom-panel panel" id="bottom-panel">
+            <div class="tab-bar">
+                <button class="tab-btn tab-btn-active" data-tab="weekly">Weekly Games</button>
+                <button class="tab-btn" data-tab="openings">Openings</button>
+            </div>
+
+            <!-- Weekly tab panel (existing content) -->
+            <div class="tab-panel" data-tab="weekly">
+                <div class="collapsible">
+                    <button class="collapsible-trigger" type="button" id="weekly-toggle" aria-expanded="true">
+                        <span>Best/Worst Games</span>
+                        <span class="chevron" aria-hidden="true">v</span>
+                    </button>
+                    <div class="collapsible-body" id="weekly-body">
+                        <div class="collapsible-inner">
+                            <div id="weekly-status" class="status" data-tone="info">
+                                Add players to see their best and worst games from the last 7 days.
+                            </div>
+                            <div class="analysis-progress hidden" id="analysis-progress">
+                                <div class="analysis-progress-bar" id="analysis-progress-bar"></div>
+                            </div>
+                            <table class="weekly-table" id="weekly-table">
+                                <thead>
+                                    <tr>
+                                        <th>Player</th>
+                                        <th>Best Game</th>
+                                        <th>Worst Game</th>
+                                        <th>Random Game</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="weekly-table-body"></tbody>
+                            </table>
                         </div>
-                        <div class="analysis-progress hidden" id="analysis-progress">
-                            <div class="analysis-progress-bar" id="analysis-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Openings tab panel -->
+            <div class="tab-panel hidden" data-tab="openings">
+                <div id="openings-status" class="status" data-tone="info">
+                    Select a player to view opening stats.
+                </div>
+
+                <div class="openings-filters">
+                    <div class="field openings-player-field">
+                        <label for="openings-player">Player</label>
+                        <select id="openings-player"></select>
+                    </div>
+                    <div class="openings-window-group">
+                        <label>Time window</label>
+                        <div class="openings-window-btns">
+                            <button class="openings-window-btn" data-window="30">30d</button>
+                            <button class="openings-window-btn openings-window-btn-active" data-window="90">90d</button>
+                            <button class="openings-window-btn" data-window="365">365d</button>
+                            <button class="openings-window-btn" data-window="0">All time</button>
                         </div>
-                        <table class="weekly-table" id="weekly-table">
+                    </div>
+                </div>
+
+                <div id="openings-all-time-note" class="hint hidden">
+                    Showing data from the last 24 months.
+                </div>
+
+                <div class="openings-chart-wrap">
+                    <canvas id="openings-chart"></canvas>
+                </div>
+
+                <div class="openings-tables">
+                    <div class="openings-sub-table">
+                        <h4 class="openings-color-heading">White</h4>
+                        <table class="openings-table" id="openings-table-white">
                             <thead>
                                 <tr>
-                                    <th>Player</th>
-                                    <th>Best Game</th>
-                                    <th>Worst Game</th>
-                                    <th>Random Game</th>
+                                    <th data-sort="name">Opening</th>
+                                    <th data-sort="eco">ECO</th>
+                                    <th data-sort="games" class="sort-active sort-desc">Games</th>
+                                    <th data-sort="winRate">Win%</th>
+                                    <th data-sort="drawRate">Draw%</th>
+                                    <th data-sort="lossRate">Loss%</th>
+                                    <th data-sort="perfRating">Perf</th>
                                 </tr>
                             </thead>
-                            <tbody id="weekly-table-body"></tbody>
+                            <tbody id="openings-tbody-white"></tbody>
+                        </table>
+                    </div>
+                    <div class="openings-sub-table">
+                        <h4 class="openings-color-heading">Black</h4>
+                        <table class="openings-table" id="openings-table-black">
+                            <thead>
+                                <tr>
+                                    <th data-sort="name">Opening</th>
+                                    <th data-sort="eco">ECO</th>
+                                    <th data-sort="games" class="sort-active sort-desc">Games</th>
+                                    <th data-sort="winRate">Win%</th>
+                                    <th data-sort="drawRate">Draw%</th>
+                                    <th data-sort="lossRate">Loss%</th>
+                                    <th data-sort="perfRating">Perf</th>
+                                </tr>
+                            </thead>
+                            <tbody id="openings-tbody-black"></tbody>
                         </table>
                     </div>
                 </div>
