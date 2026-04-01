@@ -23,6 +23,7 @@ export class TabController {
         });
         const first = defaultTab ?? this.tabButtons[0]?.dataset.tab;
         if (first) this.setActiveTab(first);
+        return this;
     }
 
     /**
