@@ -268,8 +268,8 @@ export class App {
                 windowBtns: document.querySelectorAll('.openings-window-btn'),
                 whiteTableBody: document.getElementById(DOMIds.OPENINGS_TBODY_WHITE),
                 blackTableBody: document.getElementById(DOMIds.OPENINGS_TBODY_BLACK),
-                whiteTableHead: document.querySelector('#openings-table-white thead'),
-                blackTableHead: document.querySelector('#openings-table-black thead'),
+                whiteTableHead: document.querySelector(`#${DOMIds.OPENINGS_TABLE_WHITE} thead`),
+                blackTableHead: document.querySelector(`#${DOMIds.OPENINGS_TABLE_BLACK} thead`),
                 chartCanvas: document.getElementById(DOMIds.OPENINGS_CHART)
             },
             () => this.playerManager.getAllPlayers(),
