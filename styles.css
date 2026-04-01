@@ -1027,3 +1027,197 @@ canvas {
         max-width: 300px;
     }
 }
+
+/* ─── Tab bar ──────────────────────────────────────────────── */
+
+.bottom-panel {
+    margin-top: 14px;
+}
+
+.tab-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+}
+
+.tab-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 14px;
+    transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+}
+
+.tab-btn-active {
+    background: var(--bg-elevated);
+    border-color: var(--border);
+    color: var(--accent);
+}
+
+/* ─── Openings filters ─────────────────────────────────────── */
+
+.openings-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 14px;
+}
+
+.openings-player-field {
+    min-width: 180px;
+    max-width: 260px;
+}
+
+.openings-window-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.openings-window-btns {
+    display: flex;
+    gap: 4px;
+}
+
+.openings-window-btn {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 4px 10px;
+    transition: color 0.15s, border-color 0.15s;
+}
+
+.openings-window-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+.openings-window-btn-active {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ─── Openings chart ───────────────────────────────────────── */
+
+.openings-chart-wrap {
+    margin-bottom: 20px;
+    max-height: 320px;
+}
+
+.openings-chart-wrap canvas {
+    max-height: 320px;
+}
+
+/* ─── Openings tables ──────────────────────────────────────── */
+
+.openings-tables {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 720px) {
+    .openings-tables {
+        grid-template-columns: 1fr;
+    }
+}
+
+.openings-color-heading {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    margin: 0 0 8px;
+    text-transform: uppercase;
+}
+
+.openings-table {
+    border-collapse: collapse;
+    font-size: 13px;
+    width: 100%;
+}
+
+.openings-table th {
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 8px;
+    text-align: left;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.openings-table th:hover {
+    color: var(--text-secondary);
+}
+
+.openings-table th.sort-active {
+    color: var(--accent);
+}
+
+.openings-table th.sort-active::after {
+    content: ' ↓';
+}
+
+.openings-table th.sort-active.sort-asc::after {
+    content: ' ↑';
+}
+
+.openings-table td {
+    border-top: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 8px;
+}
+
+.openings-table tr:hover td {
+    background: var(--bg-elevated);
+}
+
+.openings-table .cell-eco {
+    color: var(--accent);
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.openings-table .cell-name {
+    color: var(--text-secondary);
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.openings-table .cell-other {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.openings-table .cell-win {
+    color: var(--success);
+}
+
+.openings-table .cell-loss {
+    color: var(--error);
+}
+
+.openings-table .cell-draw {
+    color: var(--text-secondary);
+}
