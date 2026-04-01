@@ -106,7 +106,10 @@ export class OpeningsService {
             const batch = recentArchives.slice(i, i + BATCH_SIZE);
             const results = await Promise.all(
                 batch.map(url =>
-                    this.fetchMonthGames(username, url).catch(() => [])
+                    this.fetchMonthGames(username, url).catch(e => {
+                        if (e.message?.includes('rate limit')) throw e;
+                        return [];
+                    })
                 )
             );
             results.forEach(games => allGames.push(...games));
