@@ -64,7 +64,19 @@ export const AppConfig = {
         90: '3 months',
         180: '6 months',
         365: '1 year'
-    }
+    },
+
+    // Openings feature
+    OPENINGS_MAX_MONTHS: 24,
+    OPENINGS_CACHE_PREFIX: 'openings:',
+    OPENINGS_TIME_WINDOWS: [
+        { days: 30,  label: '30d' },
+        { days: 90,  label: '90d' },
+        { days: 365, label: '365d' },
+        { days: 0,   label: 'All time' }  // 0 = all time, capped at OPENINGS_MAX_MONTHS
+    ],
+    OPENINGS_DEFAULT_WINDOW: 90,
+    OPENINGS_MIN_GAMES: 3
 };
 
 /**
@@ -116,5 +128,18 @@ export const DOMIds = {
     BTN_PREV: 'btn-prev',
     BTN_PLAY: 'btn-play',
     BTN_NEXT: 'btn-next',
-    BTN_END: 'btn-end'
+    BTN_END: 'btn-end',
+
+    // Tab bar
+    BOTTOM_PANEL: 'bottom-panel',
+
+    // Openings
+    OPENINGS_STATUS: 'openings-status',
+    OPENINGS_PLAYER_SELECT: 'openings-player',
+    OPENINGS_ALL_TIME_NOTE: 'openings-all-time-note',
+    OPENINGS_CHART: 'openings-chart',
+    OPENINGS_TABLE_WHITE: 'openings-table-white',
+    OPENINGS_TABLE_BLACK: 'openings-table-black',
+    OPENINGS_TBODY_WHITE: 'openings-tbody-white',
+    OPENINGS_TBODY_BLACK: 'openings-tbody-black'
 };

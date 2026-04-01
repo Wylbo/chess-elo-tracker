@@ -98,5 +98,10 @@ export const Events = {
 
     // State events
     STATE_PERSISTED: 'state:persisted',
-    STATE_RESTORED: 'state:restored'
+    STATE_RESTORED: 'state:restored',
+
+    // Openings events
+    OPENINGS_FETCH_REQUESTED: 'openings:fetchRequested',
+    OPENINGS_STATS_READY: 'openings:statsReady',
+    OPENINGS_ERROR: 'openings:error'
 };
