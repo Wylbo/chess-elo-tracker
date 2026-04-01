@@ -173,7 +173,7 @@ export class OpeningsController {
     // ─── Private: rendering ─────────────────────────────────────
 
     /** @private */
-    _handleStatsReady({ openings }) {
+    _handleStatsReady({ username, openings }) {
         this.currentStats = openings;
         const isEmpty = !openings.white.length && !openings.black.length;
         if (isEmpty) {
@@ -184,6 +184,7 @@ export class OpeningsController {
         this._renderTable('white', openings.white);
         this._renderTable('black', openings.black);
         this._renderChart(openings);
+        if (username) this.playerSelect.value = username;
     }
 
     /**
@@ -267,7 +268,7 @@ export class OpeningsController {
             <td class="cell-win">${wr}%</td>
             <td class="cell-draw">${dr}%</td>
             <td class="cell-loss">${lr}%</td>
-            <td>${s.perfRating || '—'}</td>
+            <td>${typeof s.perfRating === 'number' ? Math.round(s.perfRating) : '—'}</td>
         `;
         return tr;
     }
@@ -310,7 +311,7 @@ export class OpeningsController {
             data: {
                 labels: top10.map(o => {
                     const n = o.name.length > 35 ? o.name.slice(0, 35) + '…' : o.name;
-                    return `${o.eco} – ${n}`;
+                    return `${o.eco} — ${n}`;
                 }),
                 datasets: [
                     {
