@@ -30,9 +30,16 @@ export class OpeningsService {
     parseOpeningFromPGN(pgn) {
         const ecoMatch = pgn.match(/\[ECO\s+"([^"]+)"\]/);
         const nameMatch = pgn.match(/\[Opening\s+"([^"]+)"\]/);
+        let name = nameMatch?.[1];
+        if (!name) {
+            const urlMatch = pgn.match(/\[ECOUrl\s+"[^"]*\/openings\/([^"]+)"\]/);
+            if (urlMatch) {
+                name = decodeURIComponent(urlMatch[1]).replace(/-/g, ' ');
+            }
+        }
         return {
             eco: ecoMatch?.[1] ?? 'Unknown',
-            name: nameMatch?.[1] ?? 'Unknown Opening'
+            name: name ?? 'Unknown Opening'
         };
     }
 
