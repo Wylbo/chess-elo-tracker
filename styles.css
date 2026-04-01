@@ -1036,6 +1036,8 @@ canvas {
 
 .tab-bar {
     display: flex;
+    flex-direction: row;
+    align-items: center;
     gap: 4px;
     margin-bottom: 14px;
     border-bottom: 1px solid var(--border);
@@ -1048,11 +1050,13 @@ canvas {
     border-radius: 8px;
     color: var(--text-secondary);
     cursor: pointer;
+    flex-shrink: 0;
     font-family: inherit;
     font-size: 14px;
     font-weight: 500;
     padding: 6px 14px;
     transition: color 0.15s, background 0.15s, border-color 0.15s;
+    width: auto;
 }
 
 .tab-btn:hover {
