@@ -28,8 +28,8 @@ export const AppConfig = {
     ],
 
     // Stockfish analysis
-    STOCKFISH_DEPTH: 10,
-    STOCKFISH_TIMEOUT: 2000,  // 2 seconds per position, uses best eval found
+    STOCKFISH_DEPTH: 12,
+    STOCKFISH_TIMEOUT: 4000,  // 2 seconds per position, uses best eval found
     STOCKFISH_WORKER_URL: './lib/stockfish/stockfish.js',
 
     // Chess.com API

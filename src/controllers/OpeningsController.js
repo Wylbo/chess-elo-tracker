@@ -329,17 +329,17 @@ export class OpeningsController {
                     {
                         label: 'Wins',
                         data: top10.map(o => o.wins),
-                        backgroundColor: '#39FF8F'
+                        backgroundColor: '#00FFB4'
                     },
                     {
                         label: 'Draws',
                         data: top10.map(o => o.draws),
-                        backgroundColor: 'rgba(160,180,175,0.55)'
+                        backgroundColor: '#FFB830'
                     },
                     {
                         label: 'Losses',
                         data: top10.map(o => o.losses),
-                        backgroundColor: '#FF4466'
+                        backgroundColor: '#FF64C8'
                     }
                 ]
             },

@@ -46,8 +46,10 @@
                 <form id="add-form">
                     <div class="field">
                         <label for="username">Chess.com username</label>
-                        <input id="username" name="username" type="text" autocomplete="off" placeholder="e.g. hikaru"
-                            required>
+                        <div class="input-cursor-wrap">
+                            <input id="username" name="username" type="text" autocomplete="off" placeholder=" " required>
+                            <span class="input-placeholder" aria-hidden="true">e.g. hikaru<span class="input-cursor">_</span></span>
+                        </div>
                     </div>
                     <div class="field field-time-control">
                         <label for="time-class">Time control</label>

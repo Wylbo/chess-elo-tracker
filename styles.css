@@ -245,6 +245,42 @@ select:focus {
     box-shadow: 0 0 0 3px rgba(0,255,180,0.08), 0 0 12px rgba(0,255,180,0.1);
 }
 
+input::placeholder {
+    color: transparent;
+}
+
+.input-cursor-wrap {
+    position: relative;
+}
+
+.input-placeholder {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    display: none;
+}
+
+.input-cursor-wrap:has(input:placeholder-shown:not(:focus)) .input-placeholder {
+    display: block;
+}
+
+.input-cursor {
+    color: var(--cyan);
+    text-shadow: 0 0 8px var(--cyan);
+    animation: cursor-blink 1s step-end infinite;
+    margin-left: 1px;
+}
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
 button {
     border: none;
     cursor: pointer;
