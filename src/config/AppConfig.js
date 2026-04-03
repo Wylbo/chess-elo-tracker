@@ -43,8 +43,8 @@ export const AppConfig = {
         TOOLTIP_BORDER: 'rgba(0,255,180,0.25)',
         LINE_TENSION: 0.32,
         LINE_WIDTH: 2.5,
-        POINT_RADIUS: 3,
-        POINT_HOVER_RADIUS: 5,
+        POINT_RADIUS: 0,
+        POINT_HOVER_RADIUS: 0,
         ANIMATION_DURATION: 300
     },
 
@@ -75,7 +75,7 @@ export const AppConfig = {
         { days: 365, label: '365d' },
         { days: 0, label: 'All time' }  // 0 = all time, capped at OPENINGS_MAX_MONTHS
     ],
-    OPENINGS_DEFAULT_WINDOW: 90,
+    OPENINGS_DEFAULT_WINDOW: 30,
     OPENINGS_MIN_GAMES: 3
 };
 

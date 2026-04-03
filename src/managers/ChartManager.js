@@ -19,9 +19,23 @@ export class ChartManager {
     initialize() {
         const config = AppConfig.CHART;
 
+        const lineGlowPlugin = {
+            id: 'lineGlow',
+            beforeDatasetDraw(chart, args) {
+                const color = chart.data.datasets[args.index]?.borderColor ?? 'transparent';
+                chart.ctx.save();
+                chart.ctx.shadowBlur = 8;
+                chart.ctx.shadowColor = color;
+            },
+            afterDatasetDraw(chart) {
+                chart.ctx.restore();
+            }
+        };
+
         this.chart = new Chart(this.canvas, {
             type: 'line',
             data: { datasets: [] },
+            plugins: [lineGlowPlugin],
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -83,16 +97,27 @@ export class ChartManager {
             const data = this.buildWindowedSeries(player.data, startBound, endBound);
             if (!data.length) return;
 
+            const chartArea = this.chart.chartArea;
+            let fill;
+            if (chartArea) {
+                const gradient = this.canvas.getContext('2d').createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                gradient.addColorStop(0, player.color + '40');
+                gradient.addColorStop(1, player.color + '00');
+                fill = gradient;
+            } else {
+                fill = player.color + '22';
+            }
+
             datasets.push({
                 label: player.displayName,
                 data,
                 borderColor: player.color,
-                backgroundColor: player.color + '33',
+                backgroundColor: fill,
                 tension: config.LINE_TENSION,
                 borderWidth: config.LINE_WIDTH,
                 pointRadius: config.POINT_RADIUS,
                 pointHoverRadius: config.POINT_HOVER_RADIUS,
-                fill: false,
+                fill: true,
                 spanGaps: true
             });
         });
