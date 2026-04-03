@@ -689,11 +689,12 @@ button {
 }
 
 .range-selector-label {
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 .range-selector-wrap {
