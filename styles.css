@@ -586,18 +586,18 @@ button {
 }
 
 .chart-panel {
-    padding: 18px;
+    padding: 16px 18px;
     display: grid;
     gap: 12px;
 }
 
 .range-panel {
-    padding: 12px;
-    border-radius: 12px;
+    padding: 10px 14px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: var(--bg-elevated);
     display: grid;
-    gap: 12px;
+    gap: 10px;
 }
 
 .range-header {
@@ -605,8 +605,6 @@ button {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    color: var(--text-secondary);
-    font-size: 14px;
     flex-wrap: wrap;
 }
 
@@ -619,9 +617,11 @@ button {
 }
 
 .range-values {
-    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan-dim);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
     white-space: nowrap;
     margin-left: auto;
 }
@@ -629,24 +629,27 @@ button {
 .range-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
 }
 
 .range-buttons button {
-    background: var(--bg-elevated);
-    color: var(--text-primary);
+    background: transparent;
+    color: var(--text-muted);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px 12px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    border-radius: 5px;
+    padding: 6px 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.06em;
     cursor: pointer;
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    text-transform: uppercase;
+    transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .range-buttons button:hover {
-    border-color: var(--accent-soft);
-    color: #f1e3d4;
+    border-color: var(--border-bright);
+    color: var(--text);
 }
 
 .range-buttons button:active {
@@ -654,18 +657,15 @@ button {
 }
 
 .range-buttons button.active {
-    background: linear-gradient(120deg, var(--accent), var(--accent-soft));
-    color: var(--bg-main);
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    background: rgba(0,255,180,0.1);
+    color: var(--cyan);
+    border-color: var(--border-bright);
+    box-shadow: 0 0 10px rgba(0,255,180,0.12);
 }
 
 .range-buttons button:disabled {
-    background: var(--bg-main);
-    color: var(--text-muted);
-    border-color: var(--border);
+    opacity: 0.35;
     cursor: not-allowed;
-    opacity: 0.5;
 }
 
 .range-buttons button:disabled:hover {
@@ -682,8 +682,8 @@ button {
 .range-selector-panel {
     display: grid;
     gap: 10px;
-    padding: 12px;
-    border-radius: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
     border: 1px solid var(--border);
     background: var(--bg-elevated);
 }
@@ -714,21 +714,22 @@ button {
     top: 0;
     left: 0;
     height: 100%;
-    background: rgba(209, 154, 102, 0.15);
-    border-left: 2px solid var(--accent);
-    border-right: 2px solid var(--accent);
+    background: rgba(0,255,180,0.07);
+    border-left: 2px solid var(--cyan);
+    border-right: 2px solid var(--cyan);
+    box-shadow: 0 0 10px rgba(0,255,180,0.1);
     cursor: grab;
     user-select: none;
     transition: background 0.1s ease;
 }
 
 .range-overlay:hover {
-    background: rgba(209, 154, 102, 0.25);
+    background: rgba(0,255,180,0.12);
 }
 
 .range-overlay.dragging {
     cursor: grabbing;
-    background: rgba(209, 154, 102, 0.3);
+    background: rgba(0,255,180,0.15);
 }
 
 .range-overlay.left-resize,
