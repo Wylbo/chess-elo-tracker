@@ -37,10 +37,10 @@ export const AppConfig = {
 
     // Chart styling
     CHART: {
-        GRID_COLOR: 'rgba(230,225,220,0.08)',
-        TICK_COLOR: '#B8B2A7',
-        TOOLTIP_BG: '#2B2A28',
-        TOOLTIP_BORDER: 'rgba(53,50,47,0.7)',
+        GRID_COLOR: 'rgba(0,255,180,0.06)',
+        TICK_COLOR: 'rgba(180,210,195,0.5)',
+        TOOLTIP_BG: '#0C1220',
+        TOOLTIP_BORDER: 'rgba(0,255,180,0.25)',
         LINE_TENSION: 0.32,
         LINE_WIDTH: 2.5,
         POINT_RADIUS: 3,

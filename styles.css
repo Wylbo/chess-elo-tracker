@@ -251,6 +251,7 @@ button {
 }
 
 .primary-btn {
+    text-transform: uppercase;
     background: rgba(0,255,180,0.1);
     color: var(--cyan);
     border: 1px solid var(--border-bright);
@@ -281,6 +282,7 @@ button {
 }
 
 .secondary-btn {
+    text-transform: uppercase;
     background: transparent;
     color: var(--text-secondary);
     padding: 11px 14px;
@@ -333,6 +335,14 @@ button {
     align-items: center;
     gap: 8px;
     min-height: 40px;
+}
+
+.status::before {
+    content: 'STATUS › ';
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 0.06em;
 }
 
 .status[data-tone="success"] {
