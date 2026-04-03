@@ -1254,25 +1254,27 @@ canvas {
 }
 
 .openings-window-btn {
-    background: var(--bg-elevated);
+    background: transparent;
     border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text-secondary);
+    border-radius: 5px;
+    color: var(--text-muted);
     cursor: pointer;
-    font-family: inherit;
-    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
     padding: 4px 10px;
     transition: color 0.15s, border-color 0.15s;
 }
 
 .openings-window-btn:hover {
-    color: var(--text-primary);
-    border-color: var(--text-muted);
+    color: var(--text);
+    border-color: var(--border-bright);
 }
 
 .openings-window-btn-active {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-bright);
+    color: var(--cyan);
+    box-shadow: 0 0 8px rgba(0,255,180,0.1);
 }
 
 /* ─── Openings chart ───────────────────────────────────────── */
@@ -1301,10 +1303,11 @@ canvas {
 }
 
 .openings-color-heading {
-    color: var(--text-secondary);
-    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 11px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     margin: 0 0 8px;
     text-transform: uppercase;
 }
@@ -1316,14 +1319,17 @@ canvas {
 }
 
 .openings-table th {
+    font-family: 'JetBrains Mono', monospace;
     color: var(--text-muted);
     cursor: pointer;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 500;
+    letter-spacing: 0.08em;
     padding: 6px 8px;
     text-align: left;
     user-select: none;
     white-space: nowrap;
+    text-transform: uppercase;
 }
 
 .openings-table th:hover {
@@ -1331,7 +1337,7 @@ canvas {
 }
 
 .openings-table th.sort-active {
-    color: var(--accent);
+    color: var(--cyan);
 }
 
 .openings-table th.sort-active::after {
@@ -1343,19 +1349,19 @@ canvas {
 }
 
 .openings-table td {
-    border-top: 1px solid var(--border);
-    color: var(--text-primary);
+    border-top: 1px solid rgba(0,255,180,0.06);
+    color: var(--text);
     padding: 6px 8px;
 }
 
 .openings-table tr:hover td {
-    background: var(--bg-elevated);
+    background: rgba(0,255,180,0.03);
 }
 
 .openings-table .cell-eco {
-    color: var(--accent);
-    font-family: monospace;
-    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+    font-size: 11px;
 }
 
 .openings-table .cell-name {
@@ -1371,14 +1377,6 @@ canvas {
     font-style: italic;
 }
 
-.openings-table .cell-win {
-    color: var(--success);
-}
-
-.openings-table .cell-loss {
-    color: var(--error);
-}
-
-.openings-table .cell-draw {
-    color: var(--text-secondary);
-}
+.openings-table .cell-win  { color: var(--success); }
+.openings-table .cell-loss { color: var(--error); }
+.openings-table .cell-draw { color: var(--text-secondary); }
