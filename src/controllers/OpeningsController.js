@@ -339,7 +339,7 @@ export class OpeningsController {
                     {
                         label: 'Losses',
                         data: top10.map(o => o.losses),
-                        backgroundColor: '#FF64C8'
+                        backgroundColor: '#FF6B6B'
                     }
                 ]
             },
