@@ -1309,12 +1309,6 @@ canvas {
     gap: 20px;
 }
 
-@media (max-width: 720px) {
-    .openings-tables {
-        grid-template-columns: 1fr;
-    }
-}
-
 .openings-color-heading {
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-muted);
