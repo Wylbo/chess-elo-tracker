@@ -17,14 +17,14 @@ export const AppConfig = {
 
     // Color palette for player lines
     PALETTE: [
-        '#D19A66',
-        '#C5865B',
-        '#98C379',
-        '#E5C07B',
-        '#E06C75',
-        '#B8B2A7',
-        '#8C8577',
-        '#E6E1DC'
+        '#00FFB4', // cyan
+        '#FF64C8', // pink
+        '#FFB830', // amber
+        '#7C6EFF', // indigo
+        '#FF6B6B', // coral
+        '#00D4FF', // sky
+        '#A8FF3E', // lime
+        '#FF9F43', // orange
     ],
 
     // Stockfish analysis
