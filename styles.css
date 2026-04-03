@@ -217,9 +217,11 @@ form {
 
 label {
     display: block;
-    font-size: 13px;
-    letter-spacing: 0.01em;
-    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
     margin-bottom: 6px;
 }
 
@@ -228,18 +230,19 @@ select {
     width: 100%;
     background: var(--bg-elevated);
     border: 1px solid var(--border);
-    color: var(--text-primary);
-    padding: 11px 12px;
-    border-radius: 10px;
-    font-size: 15px;
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: 'Space Grotesk', sans-serif;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 input:focus,
 select:focus {
-    border-color: var(--accent-soft);
-    box-shadow: 0 0 0 3px rgba(209, 154, 102, 0.25);
+    border-color: var(--border-bright);
+    box-shadow: 0 0 0 3px rgba(0,255,180,0.08), 0 0 12px rgba(0,255,180,0.1);
 }
 
 button {
@@ -248,25 +251,29 @@ button {
 }
 
 .primary-btn {
-    background: var(--accent);
-    color: var(--bg-main);
-    padding: 12px 16px;
-    border-radius: 12px;
+    background: rgba(0,255,180,0.1);
+    color: var(--cyan);
+    border: 1px solid var(--border-bright);
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    font-size: 12px;
+    letter-spacing: 0.08em;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     min-width: 150px;
     justify-content: center;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    box-shadow: 0 0 14px rgba(0,255,180,0.12);
+    transition: box-shadow 0.15s ease, background 0.15s ease, transform 0.1s ease;
+    cursor: pointer;
 }
 
 .primary-btn:hover {
+    background: rgba(0,255,180,0.18);
+    box-shadow: 0 0 20px rgba(0,255,180,0.22);
     transform: translateY(-1px);
-    background: var(--accent-soft);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
 }
 
 .primary-btn:active {
@@ -275,24 +282,27 @@ button {
 
 .secondary-btn {
     background: transparent;
-    color: var(--text-primary);
-    padding: 12px 14px;
-    border-radius: 12px;
+    color: var(--text-secondary);
+    padding: 11px 14px;
+    border-radius: 6px;
     border: 1px solid var(--border);
-    font-weight: 700;
-    letter-spacing: 0.01em;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.08em;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     min-width: 140px;
     justify-content: center;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, color 0.12s ease;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
 .secondary-btn:hover {
-    background: var(--bg-elevated);
+    border-color: var(--border-bright);
+    color: var(--text);
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24);
 }
 
 .secondary-btn:active {
@@ -300,37 +310,44 @@ button {
 }
 
 .hint {
-    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     color: var(--text-muted);
     margin-top: -2px;
 }
 
+.hint::before {
+    content: '// ';
+    color: var(--border-bright);
+}
+
 .status {
-    padding: 10px 12px;
-    border-radius: 12px;
+    padding: 9px 12px;
+    border-radius: 6px;
     background: var(--bg-elevated);
     border: 1px solid var(--border);
-    color: var(--text-primary);
-    font-size: 14px;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 44px;
+    min-height: 40px;
 }
 
 .status[data-tone="success"] {
-    border-color: rgba(152, 195, 121, 0.7);
-    color: #e3f2d8;
+    border-color: rgba(57,255,143,0.4);
+    color: #b8f5d8;
 }
 
 .status[data-tone="warn"] {
-    border-color: rgba(229, 192, 123, 0.7);
-    color: #f5ead4;
+    border-color: rgba(255,184,48,0.4);
+    color: #f5e4b8;
 }
 
 .status[data-tone="error"] {
-    border-color: rgba(224, 108, 117, 0.75);
-    color: #f7d9de;
+    border-color: rgba(255,68,102,0.4);
+    color: #f5b8c0;
 }
 
 .collapsible {
