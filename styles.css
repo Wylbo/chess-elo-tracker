@@ -825,12 +825,11 @@ canvas {
 
 /* Analysis Progress Bar */
 .analysis-progress {
-    height: 4px;
+    height: 3px;
     background: var(--bg-elevated);
     border-radius: 2px;
     margin-top: 10px;
     overflow: hidden;
-    position: relative;
 }
 
 .analysis-progress.hidden {
@@ -840,22 +839,17 @@ canvas {
 .analysis-progress-bar {
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--accent), var(--accent-soft), var(--accent));
+    background: linear-gradient(90deg, var(--cyan), rgba(0,255,180,0.5), var(--cyan));
     background-size: 200% 100%;
     border-radius: 2px;
     transition: width 0.3s ease;
-    position: relative;
-    box-shadow: 0 0 8px var(--accent), 0 0 16px rgba(209, 154, 102, 0.4);
+    box-shadow: 0 0 8px var(--cyan), 0 0 16px rgba(0,255,180,0.3);
     animation: shimmer 1.5s ease-in-out infinite;
 }
 
 @keyframes shimmer {
-    0% {
-        background-position: 200% 0;
-    }
-    100% {
-        background-position: -200% 0;
-    }
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 .weekly-table {
@@ -1196,27 +1190,29 @@ canvas {
 .tab-btn {
     background: none;
     border: 1px solid transparent;
-    border-radius: 8px;
-    color: var(--text-secondary);
+    border-radius: 5px;
+    color: var(--text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    font-family: inherit;
-    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     font-weight: 500;
-    padding: 6px 14px;
+    letter-spacing: 0.08em;
+    padding: 5px 14px;
     transition: color 0.15s, background 0.15s, border-color 0.15s;
     width: auto;
 }
 
 .tab-btn:hover {
     background: var(--bg-elevated);
-    color: var(--text-primary);
+    color: var(--text);
 }
 
 .tab-btn-active {
-    background: var(--bg-elevated);
-    border-color: var(--border);
-    color: var(--accent);
+    background: rgba(0,255,180,0.08);
+    border-color: var(--border-bright);
+    color: var(--cyan);
+    box-shadow: 0 0 8px rgba(0,255,180,0.1);
 }
 
 /* ─── Openings filters ─────────────────────────────────────── */
