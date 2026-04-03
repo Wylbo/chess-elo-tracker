@@ -855,15 +855,15 @@ canvas {
 .weekly-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 12px;
+    margin-top: 8px;
     table-layout: fixed;
 }
 
 .weekly-table th,
 .weekly-table td {
-    padding: 12px;
+    padding: 10px 12px;
     text-align: left;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(0,255,180,0.07);
 }
 
 .weekly-table th:first-child,
@@ -872,11 +872,12 @@ canvas {
 }
 
 .weekly-table th {
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.1em;
 }
 
 .weekly-table tbody tr:last-child td {
@@ -896,69 +897,85 @@ canvas {
 .game-cell {
     cursor: pointer;
     transition: background 0.15s ease;
-    border-radius: 8px;
-    padding: 8px 12px;
+    border-radius: 6px;
+    padding: 7px 10px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    display: inline-flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
 .game-cell:hover {
-    background: var(--bg-main);
+    background: rgba(0,255,180,0.04);
 }
 
 .game-cell.best {
-    border-left: 3px solid var(--success);
+    border-left: 2px solid var(--success);
+    box-shadow: -2px 0 8px rgba(57,255,143,0.2);
 }
 
 .game-cell.worst {
-    border-left: 3px solid var(--error);
+    border-left: 2px solid var(--error);
+    box-shadow: -2px 0 8px rgba(255,68,102,0.2);
 }
 
 .game-cell.random {
-    border-left: 3px solid var(--accent);
+    border-left: 2px solid var(--cyan);
+    box-shadow: -2px 0 8px rgba(0,255,180,0.15);
 }
 
 .game-cell-content {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .game-accuracy-badge {
     display: inline-block;
-    padding: 2px 8px;
+    padding: 1px 7px;
     border-radius: 999px;
-    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     font-weight: 700;
+    border: 1px solid transparent;
 }
 
 .game-accuracy-badge.high {
-    background: rgba(152, 195, 121, 0.2);
+    background: rgba(57,255,143,0.1);
     color: var(--success);
+    border-color: rgba(57,255,143,0.3);
 }
 
 .game-accuracy-badge.medium {
-    background: rgba(229, 192, 123, 0.2);
+    background: rgba(255,184,48,0.1);
     color: var(--warning);
+    border-color: rgba(255,184,48,0.3);
 }
 
 .game-accuracy-badge.low {
-    background: rgba(224, 108, 117, 0.2);
+    background: rgba(255,68,102,0.1);
     color: var(--error);
+    border-color: rgba(255,68,102,0.3);
 }
 
 .game-accuracy-badge.pending {
-    background: rgba(184, 178, 167, 0.2);
-    color: var(--text-secondary);
+    background: rgba(0,255,180,0.05);
+    color: var(--text-muted);
+    border-color: var(--border);
 }
 
 .game-accuracy-badge.analyzing {
-    background: rgba(209, 154, 102, 0.2);
-    color: var(--accent);
+    background: rgba(0,255,180,0.08);
+    color: var(--cyan);
+    border-color: var(--border-bright);
     animation: pulse 1.5s ease-in-out infinite;
 }
 
 .game-accuracy-badge.failed {
-    background: rgba(140, 133, 119, 0.2);
+    background: rgba(140,170,155,0.08);
     color: var(--text-muted);
+    border-color: var(--border);
 }
 
 @keyframes pulse {
@@ -967,30 +984,25 @@ canvas {
 }
 
 .game-opponent {
-    font-size: 13px;
-    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
 }
 
 .game-result {
-    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     font-weight: 600;
 }
 
-.game-result.win {
-    color: var(--success);
-}
-
-.game-result.loss {
-    color: var(--error);
-}
-
-.game-result.draw {
-    color: var(--warning);
-}
+.game-result.win  { color: var(--success); }
+.game-result.loss { color: var(--error); }
+.game-result.draw { color: var(--warning); }
 
 .no-games-cell {
     color: var(--text-muted);
     font-style: italic;
+    font-size: 12px;
 }
 
 /* Modal Styles */
