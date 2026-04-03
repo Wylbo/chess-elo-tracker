@@ -160,7 +160,7 @@ export class App {
      */
     initializeControllers() {
         // Tab controller
-        const tabButtons = document.querySelectorAll('[data-tab]');
+        const tabButtons = document.querySelectorAll('.tab-bar [data-tab]');
         const tabPanels = document.querySelectorAll('.tab-panel');
         this.tabController = new TabController(tabButtons, tabPanels);
         this.tabController.initialize('weekly');
