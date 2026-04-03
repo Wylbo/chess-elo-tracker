@@ -139,11 +139,52 @@ body::before {
 }
 
 .panel {
-    background: var(--bg-surface);
+    background: var(--bg-panel);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 8px;
     padding: 16px 18px;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+    box-shadow: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Scanline overlay */
+.panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,255,180,0.012) 3px,
+        rgba(0,255,180,0.012) 4px
+    );
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+}
+
+/* Corner bracket decorations */
+.panel-corner {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-color: var(--cyan);
+    border-style: solid;
+    border-width: 0;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 1;
+}
+.panel-corner.tl { top: 7px; left: 7px; border-top-width: 1.5px; border-left-width: 1.5px; }
+.panel-corner.tr { top: 7px; right: 7px; border-top-width: 1.5px; border-right-width: 1.5px; }
+.panel-corner.bl { bottom: 7px; left: 7px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.panel-corner.br { bottom: 7px; right: 7px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+.panel > *:not(.panel-corner) {
+    position: relative;
+    z-index: 1;
 }
 
 .controls {
