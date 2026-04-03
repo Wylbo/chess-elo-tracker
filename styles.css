@@ -352,7 +352,7 @@ button {
 
 .collapsible {
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 6px;
     background: var(--bg-elevated);
     overflow: hidden;
 }
@@ -364,27 +364,35 @@ button {
 .collapsible-trigger {
     width: 100%;
     background: transparent;
-    color: var(--text-primary);
+    color: var(--text);
     padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
     font-weight: 600;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
     display: flex;
     align-items: center;
     gap: 10px;
     justify-content: space-between;
+    cursor: pointer;
+    border: none;
 }
 
 .pill {
-    background: var(--border);
-    color: var(--text-secondary);
+    background: rgba(0,255,180,0.1);
+    color: var(--cyan);
+    border: 1px solid var(--border);
     padding: 2px 8px;
     border-radius: 999px;
-    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     font-weight: 700;
 }
 
 .chevron {
     font-size: 14px;
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 .collapsible-body {
@@ -407,7 +415,7 @@ button {
 
 .list {
     display: grid;
-    gap: 8px;
+    gap: 6px;
 }
 
 .player-row {
@@ -415,49 +423,57 @@ button {
     grid-template-columns: auto 1fr auto auto;
     align-items: center;
     gap: 10px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    background: var(--bg-surface);
+    padding: 9px 12px;
+    border-radius: 6px;
+    background: var(--bg-elevated);
     border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+}
+
+.player-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--player-color, var(--border));
+    box-shadow: 0 0 8px var(--player-color, transparent);
 }
 
 .player-row.placeholder {
-    min-height: 58px;
+    min-height: 54px;
     border-style: dashed;
-    opacity: 0.6;
+    opacity: 0.5;
     pointer-events: none;
 }
 
 .player-row.disabled {
-    background: #1f1e1d;
-    border-color: #2d2b29;
-    color: var(--text-muted);
-    opacity: 0.85;
+    background: rgba(15,23,41,0.6);
+    border-color: rgba(0,255,180,0.06);
+    opacity: 0.7;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.02);
+    flex-shrink: 0;
     cursor: pointer;
-}
-
-.player-row.disabled .dot {
-    background: var(--border) !important;
-    box-shadow: none;
-    cursor: not-allowed;
 }
 
 .player-meta {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 
 .player-name {
     font-weight: 600;
+    font-size: 14px;
     letter-spacing: 0.01em;
+    color: var(--text);
 }
 
 .player-row.disabled .player-name {
@@ -466,7 +482,8 @@ button {
 
 .player-sub {
     color: var(--text-muted);
-    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -475,32 +492,21 @@ button {
 
 .player-rating {
     font-weight: 700;
-    color: var(--text-primary);
+    color: var(--text-secondary);
 }
 
 .player-trend {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     font-weight: 700;
-    letter-spacing: 0.01em;
 }
 
-.player-trend.trend-up {
-    color: var(--success);
-}
+.player-trend.trend-up   { color: var(--success); }
+.player-trend.trend-down { color: var(--error); }
+.player-trend.trend-flat { color: var(--text-muted); }
 
-.player-trend.trend-down {
-    color: var(--error);
-}
-
-.player-trend.trend-flat {
-    color: var(--text-secondary);
-}
-
-.player-time-class {
-    color: var(--text-secondary);
-}
+.player-time-class { color: var(--text-muted); }
 
 .player-row.disabled .player-trend,
 .player-row.disabled .player-rating,
@@ -510,8 +516,8 @@ button {
 
 .toggle {
     position: relative;
-    width: 46px;
-    height: 26px;
+    width: 42px;
+    height: 24px;
 }
 
 .toggle input {
@@ -524,7 +530,7 @@ button {
     position: absolute;
     cursor: pointer;
     inset: 0;
-    background: var(--border);
+    background: rgba(0,255,180,0.08);
     border-radius: 999px;
     transition: background 0.2s ease;
     border: 1px solid var(--border);
@@ -533,50 +539,50 @@ button {
 .slider::before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
+    height: 16px;
+    width: 16px;
     left: 3px;
     top: 3px;
-    background: var(--text-primary);
+    background: var(--text-muted);
     border-radius: 50%;
     transition: transform 0.2s ease, background 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 
 .toggle input:disabled + .slider {
-    background: var(--border);
-    border-color: var(--border);
+    background: rgba(0,255,180,0.03);
+    border-color: rgba(0,255,180,0.06);
     cursor: not-allowed;
 }
 
 .toggle input:disabled + .slider::before {
-    background: var(--text-muted);
-    box-shadow: none;
+    background: var(--border);
 }
 
 .toggle input:checked + .slider {
-    background: var(--accent);
-    border-color: var(--accent);
+    background: rgba(0,255,180,0.15);
+    border-color: var(--border-bright);
 }
 
 .toggle input:checked + .slider::before {
-    transform: translateX(20px);
-    background: var(--bg-main);
+    transform: translateX(18px);
+    background: var(--cyan);
+    box-shadow: 0 0 6px var(--cyan);
 }
 
 .ghost-btn {
     background: transparent;
     color: var(--text-muted);
     padding: 6px 8px;
-    border-radius: 10px;
+    border-radius: 6px;
     border: 1px solid transparent;
+    cursor: pointer;
     transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
 
 .ghost-btn:hover {
-    color: var(--text-primary);
+    color: var(--text);
     border-color: var(--border);
-    background: var(--bg-surface);
+    background: var(--bg-elevated);
 }
 
 .chart-panel {

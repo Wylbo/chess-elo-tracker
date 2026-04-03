@@ -72,6 +72,10 @@ export class PlayerListController {
 
         // Color dot
         const dot = this.createColorDot(player);
+        // Set CSS custom property for the left accent bar
+        row.style.setProperty('--player-color', player.color);
+        // Add glow to the dot matching player color
+        dot.style.boxShadow = `0 0 8px ${player.color}`;
         row.appendChild(dot);
 
         // Player meta info
